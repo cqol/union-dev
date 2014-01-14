@@ -17,7 +17,7 @@
 }
 
 .tts_sidertab, .tts-marker, .tts_tip_wrap, .tts_marker_box,
-.brand_tip_wrap,.brand_sidertab {
+.brand_tip_wrap, .brand_sidertab {
     position: absolute;
     z-index: 49059558;
     overflow: visible;
@@ -310,6 +310,7 @@
     height: 195px;
     width: 25px;
 }
+
 .brand_alink a {
     display: block;
     height: 195px;
@@ -328,7 +329,8 @@
     height: 220px;
     top: 0;
 }
-.brand_tip_wrap a{
+
+.brand_tip_wrap a {
     display: block;
     height: 220px;
     width: 330px;
@@ -338,6 +340,7 @@
     left: 0;
     background-image: url(about:blank);
 }
+
 .brand_close {
     float: left;
     background-color: #ffcaca;
@@ -346,3 +349,46 @@
     cursor: pointer;
     background: url(http://ttsmedia.b0.upaiyun.com/union/img/close_01.png) no-repeat;
 }
+
+/*command 20130705 for bubbleFrame*/
+.media_bubble {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    position: fixed;
+    height: 0px;
+    display: none;
+    width: 300px;
+    right: 0;
+    border: solid 1px #f1f1f1;
+    background: #fff url(http://img.taotaosou.cn/tts-static-5/img/ajax_load.gif) no-repeat center center;
+    bottom: 0;
+    z-index: 405548810;
+    _position: absolute;
+    _top: expression(documentElement.scrollTop + documentElement.clientHeight-this.offsetHeight);
+}
+
+.media_bubble_close {
+    position: absolute;
+    font-family: "微软雅黑", arial;
+    right: 6px;
+    display: block;
+    top: 3px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 12px;
+    z-index: 405548811;
+}
+.media_bubble a:hover {
+    color: #ff3333;
+    text-decoration: underline;
+}
+
+.media_bubble_frame {
+    left: 0;
+    top: 0;
+    width: 300px;
+    height: 250px;
+    position: absolute;
+}
+/*command 20130705 for bubbleFrame*/

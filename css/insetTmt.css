@@ -1,0 +1,77 @@
+.J_TTS_banner {
+    position: relative;
+    overflow: hidden;
+    float: left;
+}
+
+.J_TTS_banner #banner_list img {
+    border: 0px;
+    font-family: impact;
+}
+
+.J_TTS_banner #banner_bg {
+    position: absolute;
+    bottom: 0;
+    background-color: #000;
+    height: 30px;
+    filter: Alpha(Opacity = 30);
+    opacity: 0.3;
+    z-index: 1000;
+    cursor: pointer;
+    width: 478px;
+}
+
+.J_TTS_banner #banner_info {
+    position: absolute;
+    bottom: 0;
+    left: 5px;
+    height: 22px;
+    color: #fff;
+    z-index: 1001;
+    cursor: pointer
+}
+
+.J_TTS_banner #banner_text {
+    position: absolute;
+    width: 120px;
+    z-index: 1002;
+    right: 3px;
+    bottom: 3px;
+}
+
+.J_TTS_banner ul {
+    position: absolute;
+    list-style-type: none;
+    filter: Alpha(Opacity = 80);
+    opacity: 0.8;
+    border: 0px solid #fff;
+    z-index: 1002;
+    margin: 0;
+    padding: 0;
+    bottom: 3px;
+    right: 5px;
+}
+
+.J_TTS_banner ul li {
+    height: 14px;
+    line-height: 14px;
+    width: 22px;
+    float: left;
+    display: block;
+    color: #FFF;
+    border: #e5eaff 1px solid;
+    background: #333333;
+    cursor: pointer;
+    font-size: 12px;
+    text-align: center;
+}
+
+.J_TTS_banner ul li.on {
+    background: #777777
+}
+
+.J_TTS_banner #banner_list a {
+    position: absolute;
+    left: 0;
+    top: 0;
+}

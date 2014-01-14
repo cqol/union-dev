@@ -4,9 +4,10 @@
     }
     window.TTSMedia = true;
     var document = window.document,
-    //navigator = window.navigator,
+        cookie = window.document.cookie,
         global = "__TTS",
-        ttsunionId,
+        globalBox,
+        //ttsunionId,
         MEDIA_config;
     var url = window.location.href,
         host = window.location.host,
@@ -28,7 +29,7 @@
         test:'http://www.ttsunion.com/'
     };
 
-    //取联盟ID
+    /*//取联盟ID
     ttsunionId = (function () {
         var script = document.getElementsByTagName("script"),
             item,
@@ -36,27 +37,17 @@
         for (var i = 0, len = script.length; i < len; i++) {
             item = script[i];
             if (item.src && item.src.match(/tts_union_center/)) {
-                //_id = script[i].src.match(new RegExp("[\?\&]suid=([^\&]*)(\&?)", "i"));
                 _id = script[i].src.match(/[\?\&]suid=([^\&]*)(\&?)/i);
                 return _id ? _id[1] : false;
             }
         }
-    })();
+    })();*/
     //过滤站点
-    var skiphrefs = /taobao.com|tmall.com|etao.com|alipay|zhifubao|alimama|alibaba/;
+    var skiphrefs = /taobao|tmall.com|etao.com|alipay|zhifubao|alimama|alibaba/;
 
     if (url.match(skiphrefs)) {
         return false;
     }
-
-    /**
-     * 判断浏览器是否是ie
-     * @return {Boolean}
-     */
-    /*function isIE() {
-     //return /msie/i.test(navigator.userAgent) && !/opera/i.test(navigator.userAgent);
-     return new RegExp("msie", "i").test(navigator.userAgent) && !new RegExp("opera", "i").test(navigator.userAgent);
-     }*/
 
     /**
      * 对象在浏览器里的相对位置
@@ -80,7 +71,7 @@
      */
     function changeUrl(url) {
         //TODO: substring 是否可以封装成一个方法
-        if (url.match(/.gtimg.com/)) {
+        if (url.match(/img[1-9]?.gtimg.com/)) {
             url = "http://img1" + url.substring(url.indexOf(".gtimg.com"));
         } else if (url.match(/.rayliimg.cn/)) {
             url = "http://image1" + url.substring(url.indexOf(".rayliimg.cn"));
@@ -118,10 +109,16 @@
      * @param objSub
      * @param eObj
      * @param eSub
+     * @param url
      */
-        //TODO: 缺少参数说明，5个参数是否过多，可以省略一些参数吗？
-    function statistics(imgId, pObj, objSub, eObj, eSub) {
-        load(api.log + '&pv=' + MEDIA_config.id + ',' + imgId + ',' + pObj + ',' + objSub + ',' + eObj + ',' + eSub);
+    function statistics() {
+        var arg = '';
+        for (var i = 0, len = arguments.length; i < len; i++) {
+            arg += ',' + arguments[i];
+        }
+        //load(api.log + '&pv=' + MEDIA_config.id + ',' + imgId + ',' + pObj + ',' + objSub + ',' + eObj + ',' + eSub);
+        //TODO: MEDIA_config.id为空的时候？
+        load(api.log + '&pv=' + MEDIA_config.id + arg + ',' + window.location.href);
     }
 
     /**
@@ -147,14 +144,15 @@
             for (var i = 0; i < imgType.length; i++) {
                 var srcType = imgType[i].toUpperCase();
                 if (fixSrc.match(srcType) || (!matchUnknown && srcType === 'UNKNOWN')) {
-                    var newImg = new Image();
-                    newImg.src = img.src;
-                    if (newImg.width >= MEDIA_config.minWidth && newImg.height >= MEDIA_config.minHeight) {
+                    if (img.width === 0 && img.height === 0) {
+                        var newImg = new Image();
+                        newImg.src = img.src;
+                        if (newImg.width >= MEDIA_config.minWidth && newImg.height >= MEDIA_config.minHeight) {
+                            return true;
+                        }
+                    } else if (img.width >= MEDIA_config.minWidth && img.height >= MEDIA_config.minHeight) {
                         return true;
                     }
-                    /*if (img.width >= MEDIA_config.confSpider.macthHeight && img.height >= MEDIA_config.confSpider.macthWidth) {
-                     return true
-                     }*/
                 }
             }
         }
@@ -203,14 +201,15 @@
             for (var i = 0; i < imgType.length; i++) {
                 var srcType = imgType[i].toUpperCase();
                 if (fixSrc.match(srcType) || (!matchUnknown && srcType === 'UNKNOWN')) {
-                    var newImg = new Image();
-                    newImg.src = img.src;
-                    if (newImg.width >= MEDIA_config.minWidth && newImg.height >= MEDIA_config.minHeight) {
+                    if (img.width === 0 && img.height === 0) {
+                        var newImg = new Image();
+                        newImg.src = img.src;
+                        if (newImg.width >= MEDIA_config.confSpider.macthWidth && newImg.height >= MEDIA_config.confSpider.macthHeight) {
+                            return true;
+                        }
+                    } else if (img.width >= MEDIA_config.confSpider.macthWidth && img.height >= MEDIA_config.confSpider.macthHeight) {
                         return true;
                     }
-                    /*if (img.width >= MEDIA_config.confSpider.macthHeight && img.height >= MEDIA_config.confSpider.macthWidth) {
-                     return true
-                     }*/
                 }
             }
         }
@@ -356,40 +355,261 @@
      * 获取媒体站配置信息
      */
     function getConfig() {
-        /*var config = {
-         "id":3000100041,
-         "keyType":162103,
-         "minWidth":300,
-         "minHeight":300,
-         "maxSize":2,
-         "priority":['1', '3'],
-         "confSim":{"adStyle":1, "tabSize":3, "popDirect":1, "popTime":3, "markerStyle":1, "markerShow":1, "hover":1},
-         //"confBrand":{"adStyle":2, "popTime":3, "popNum":1, "hover":2},
-         "confBrand":{"adStyle":2, "popTime":3, "popNum":0, "hover":1, "popDirect":1, "closed":1},
-         "confCommon":{"adStyle":1, "tabSize":3, "popDirect":2, "popTime":3, "hover":1,
-         "keyWordList":[
-         ['\u624b\u5957', '\u624b\u5957', '\u5de5\u88c5\u88e4'],
-         ['\u793c\u670d\u88d9', '\u624b\u5957', '\u955c\u6846'],
-         ['\u624b\u5957', '\u624b\u5957', '\u5de5\u88c5\u88e4'],
-         ['\u793c\u670d\u88d9', '\u624b\u5957', '\u955c\u6846'],
-         ['\u624b\u5957', '\u624b\u5957', '\u5de5\u88c5\u88e4'],
-         ['\u793c\u670d\u88d9', '\u624b\u5957', '\u955c\u6846']
-         ]},
-         "confSpider":{"macthNum":3, "macthWidth":350, "macthHeight":300, "imgType":['JPG', 'JPEG', 'PNG']}
-         };
-         MEDIA_config = config;
-         init();
-         hasMedia = false;*/
         hasMedia = false;
-        TTSUI.getJSON(api.test + "getConfig.do?name=jsonp&unionid=" + ttsunionId +
+        //TTSUI.getJSON(api.test + "getConfig.do?name=jsonp&unionid=" + ttsunionId +
+        TTSUI.getJSON(api.test + "getConfig.do?name=jsonp&unionid=10003028" +
             "&jsonp=?" +
             "&url=" + encodeURIComponent(url), function (data) {
+
+            /*data = {"id":3000100033, "keyType":132, "minWidth":300, "minHeight":300, "maxSize":1,
+                "bubbleStatus":true, "imgType":['JPG', 'JPEG', 'PNG'],
+                "priority":['1', '2'],
+                "confSim":{"adStyle":1, "tabSize":2, "popDirect":2, "popTime":3, "markerStyle":1,
+                    "markerShow":1, "hover":0},
+                "iA":{"st":true, "h":110, "w":500},
+                "confBrand":{"adStyle":2, "popTime":3,
+                    "popNum":0, "hover":2, "popDirect":1, "closed":2},
+                "confSpider":{"macthNum":3, "macthWidth":300, "macthHeight":300, "imgType":['JPG', 'JPEG', 'PNG']}
+            };*/
             if (!data) {
                 return false;
             } else {
                 MEDIA_config = data;
+                if (data.bubbleStatus) {
+                    load('http://img.taotaosou.cn/browser-static/tmt/tts_union_bubble.js?v=@@timestamp');
+                }
+                //QQ空间与youku视频轮播
+                if (data.iA.st) {
+                    //load('http://www.ttsunion.com/js/tts_union_slides.js?v=@@timestamp');
+                    (function (conf, c) {
+                        if (!conf.st) {
+                            return false;
+                        }
+                        function frameUrl(key, pid) {
+                            var str = 'http://show.kc.taotaosou.com/brand.do?brandKeyword=' +
+                                encodeURIComponent(key)  + '&keyword=' + encodeURIComponent(key) + '&brandItemSize=3&keywordType=true&source=' + pid +
+                                '&brandRandom=100&adType=2&itemSize=3';
+                            return str;
+                        }
+
+                        function frameStr(w, h, url) {
+                            var str = '<iframe frameborder="0" marginheight="0" marginwidth="0" border="0" scrolling="no" width="' +
+                                w + '" height="' + h + '" src="' + url + '&height=' + h + '&width=' + w + '"></iframe>';
+
+                            return str;
+                        }
+
+                        var delayFrame;
+                        var box_980 = c('<div align="center"></div>'),
+                            box_980_str,
+                            box_690_str,
+                            box_300 = c('<div align="center"></div>'),
+                            box_300_str,
+                            box_960_str,
+                            box_230_str,
+                            box_200_str,
+                            box_280_str,
+                            box_720_str,
+                            box_1000_str;
+                        var voiveData = [
+                            '%E5%82%AC%E5%A4%A9%E7%90%AA',
+                            '%E8%8B%8F%E6%A2%A6%E7%8E%AB',
+                            '%E8%98%91%E8%8F%87%E5%85%84%E5%BC%9F',
+                            '%E5%90%B4%E6%9C%A8%E5%85%B0',
+                            '%E4%B9%85%E4%B9%85',
+                            '%E9%9D%9E%E9%9D%9E',
+                            '%E8%83%A1%E6%A2%A6%E5%91%A8',
+                            '%E4%BD%99%E4%BF%8A%E9%80%B8',
+                            '%E5%A5%BD%E5%A3%B0%E9%9F%B3'
+                        ];
+
+                        if (host.match(/user.qzone.qq.com/)) {
+                            //个人中心Dom结构
+                            if (c('#QM_Mood_Poster_Container')[0]) {
+                                var box_520 = c('<div></div>'),
+                                    qqNum = '';
+                                //从 cookie 读取用户昵称
+                                if (cookie.match(/o_cookie/)) {
+                                    qqNum = cookie.replace(/.*o_cookie=/, '').replace(/;.*/, '');
+                                }
+                                var box_520_str = '<iframe frameborder="0" marginheight="0" marginwidth="0" border="0" scrolling="no" width="520" height="110" src="' +
+                                    frameUrl('QQ空间个人中心焦点图', 190) + '&height=92&width=520' + '"></iframe>';
+                                box_520.html(box_520_str);
+                                box_520.insertAfter('#QM_Mood_Poster_Container');
+                                statistics('PAG', '0', 'PV', 'AD1', qqNum);
+
+                                //说说板块为Iframe页面，实时加载
+                                delayFrame = setInterval(function () {
+                                    if (c('.app_canvas_frame')[0]) {
+                                        clearInterval(delayFrame);
+                                        var appFrame = c('.app_canvas_frame'),
+                                            box_620 = c('<div></div>');
+                                        var box_620_str = '<iframe frameborder="0" marginheight="0" marginwidth="0" border="0" scrolling="no" width="620" height="110" src="' +
+                                            frameUrl('QQ空间说说焦点图', 191) + '&height=110&width=620' + '"></iframe>';
+                                        box_620.html(box_620_str);
+                                        box_620.insertAfter(appFrame.contents().find('#mood_poster_container_wrapper'));
+                                        appFrame.load(function () {
+                                            box_620.insertAfter(appFrame.contents().find('#mood_poster_container_wrapper'));
+                                        });
+                                    }
+                                }, 200);
+                            }
+                        }
+                        else if (host.match(/v.youku.com/)) {
+                            var box_610 = c('<div align="center"></div>'),
+                                youkuNick = '';
+                            //从 cookie 读取用户昵称
+                            if (cookie.match(/u=/)) {
+                                youkuNick = cookie.replace(/.*u=/, '').replace(/;.*/, '');
+                            }
+                            var box_610_str = '<iframe frameborder="0" marginheight="0" marginwidth="0" border="0" scrolling="no" width="610" height="110" src="' +
+                                frameUrl('优酷播放详情页通栏', 192) + '&height=110&width=610' + '"></iframe>';
+                            box_610.html(box_610_str);
+                            //边栏视频模式
+                            if (c('#vpvideoinfov5_wrap')[0]) {
+                                box_610.insertAfter('#vpvideoinfov5_wrap');
+                                statistics('PAG', '0', 'PV', 'AD1', youkuNick);
+                            }
+                            //通栏电影模式
+                            else if (c('#vprelationofficial')[0]) {
+                                box_610.insertAfter('#vprelationofficial');
+                                statistics('PAG', '0', 'PV', 'AD1', youkuNick);
+                            }
+                            //电视剧模式
+                            else if (c('#vpaction_wrap')[0]) {
+                                box_610.insertAfter('#vpaction_wrap');
+                                statistics('PAG', '0', 'PV', 'AD1', youkuNick);
+                            }
+                        }
+                        else if (host.match(/www.hao123.com/)) {
+                            var box_1000 = c('<div style="width: 1000px; margin: 0 auto; " align="center"></div>');
+                            box_1000_str = '<iframe frameborder="0" marginheight="0" marginwidth="0" border="0" scrolling="no" width="1000" height="100" src="' +
+                                frameUrl('hao123品牌广告', 193) + '&height=100&width=1000' + '"></iframe>';
+                            box_1000.html(box_1000_str);
+                            box_1000.insertBefore('.layout-content');
+                            statistics('PAG', '0', 'PV', 'AD1');
+                        }
+                        else if (host.match(/2345.com/)) {
+                            var box_1200 = c('<div style="margin: 0 auto; " align="center"></div>'),
+                                box_1200_str;
+                            box_1200_str = '<iframe frameborder="0" marginheight="0" marginwidth="0" border="0" scrolling="no" width="1000" height="100" src="' +
+                                frameUrl('2345品牌广告', 194) + '&height=100&width=1000' + '"></iframe>';
+                            box_1200.html(box_1200_str);
+                            if (c('#content')[0]) {
+                                box_1200.insertBefore('#content');
+                            }
+                            statistics('PAG', '0', 'PV', 'AD1');
+                        }
+                        else if (url.match(/tieba.baidu.com\/f\?/)) {
+                            box_980_str = '<iframe frameborder="0" marginheight="0" marginwidth="0" border="0" scrolling="no" width="980" height="98" src="' +
+                                frameUrl('贴吧页首广告', 195) + '&height=98&width=980' + '"></iframe>';
+                            box_980.html(box_980_str);
+                            if (c('#tb_nav')[0]) {
+                                box_980.insertBefore('#tb_nav');
+                            } else if (c('.star_nav_wrap')[0]) {
+                                box_980.insertBefore('.star_nav_wrap');
+                            }
+                            statistics('PAG', '0', 'PV', 'AD1');
+                        }
+                        else if (url.match(/baidu.com\/s\?.*wd=.*/)) {
+                            for (var i = 0, len = voiveData.length; i < len; i++) {
+                                if (url.match(voiveData[i])) {
+                                    box_300_str = '<iframe frameborder="0" marginheight="0" marginwidth="0" border="0" scrolling="no" width="300" height="300" src="' +
+                                        frameUrl('百度好声音', 213) + '&height=300&width=300' + '"></iframe>';
+                                    box_300.html(box_300_str);
+                                    if (TTSUI('#content_right')[0]) {
+                                        box_300.insertBefore(TTSUI('#content_right td').find('div').eq(0));
+                                    }
+                                    return false;
+                                }
+                            }
+                        }
+                        else if (url.match(/tieba.baidu.com\/p/)) {
+                            box_980_str = frameStr(980, 98, frameUrl('帖子详情页', 216));
+                            if (c('#head')[0]) {
+                                c('<div align="center"></div>').html(box_980_str).insertAfter('#head');
+                            }
+                        }
+                        else if (url === 'http://tv.sohu.com/' || url.match(/tv.sohu.com\/voice/)) {
+                            var sohuKey,
+                                sohuPid;
+                            if (url === 'http://tv.sohu.com/') {
+                                sohuKey = '搜狐首页';
+                                sohuPid = 214;
+                            } else {
+                                sohuKey = '搜狐好声音';
+                                sohuPid = 215;
+                            }
+                            box_980_str = '<iframe frameborder="0" marginheight="0" marginwidth="0" border="0" scrolling="no" width="980" height="98" src="' +
+                                frameUrl(sohuKey, sohuPid) + '&height=98&width=980' + '"></iframe>';
+                            box_980.html(box_980_str);
+                            if (TTSUI('.bodyer')[0]) {
+                                box_980.insertBefore(TTSUI('.bodyer').find('div:first-child').eq(0));
+                            } else if (TTSUI('#tvBgArea')[0]) {
+                                box_980.insertBefore(TTSUI('#tvBgArea'));
+                            }
+                        }
+                        else if (host === 'www.4399.com') {
+                            box_960_str = frameStr(960, 96, frameUrl('4399', 209));
+                            if (c('#blank_hs')[0]) {
+                                c('<div align="center"></div>').html(box_960_str).insertAfter('#blank_hs');
+                            }
+                        }
+                        else if (host === 'news.4399.com') {
+                            box_960_str = frameStr(960, 96, frameUrl('news4399', 210));
+                            if (c('.sch_my')[0]) {
+                                c('<div style="text-align: center;" align="center"></div>').html(box_960_str).insertAfter('.sch_my');
+                            }
+                        }
+                        else if (host === 'www.7k7k.com') {
+                            box_960_str = frameStr(960, 96, frameUrl('7k7k', 211));
+                            var best = c('.best').eq(0);
+                            if (best[0]) {
+                                c('<div align="center"></div>').html(box_960_str).insertAfter(best);
+                            }
+                        }
+                        else if (host === 't.qq.com') {
+                            box_280_str = frameStr(280, 240, frameUrl('腾讯微博', 197));
+                            if (c('.new_sc_rmdfollow')[0]) {
+                                c('<div style="margin-top: 12px" align="center"></div>').html(box_280_str).insertBefore('.new_sc_rmdfollow');
+                            }
+                        }
+                        else if (host === 'home.pengyou.com') {
+                            box_230_str = frameStr(230, 230, frameUrl('朋友网', 199));
+                            if (c('.mod-check-in')[0]) {
+                                c('<div align="center"></div>').html(box_230_str).insertAfter('.mod-check-in');
+                            }
+                        }
+                        else if (url.match(/wenwen.soso.com\/z/)) {
+                            box_720_str = frameStr(720, 94, frameUrl('搜搜问问', 198));
+                            if (c('.question_main')[0]) {
+                                c('<div align="center"></div>').html(box_720_str).insertBefore('.question_main');
+                            }
+                        }
+                        else if (host === 'mail.qq.com') {
+                            box_720_str = frameStr(757, 100, frameUrl('QQ邮箱', 201));
+                            if (c('#mainFrame')[0]) {
+                                c('<div align="center"></div>').html(box_720_str).appendTo(c('#mainFrame').contents().find('.updateInfo'));
+                            }
+                        }
+                        else if (url.match(/zhidao.baidu.com\/question/)) {
+                            box_690_str = frameStr(690, 90, frameUrl('百度知道', 203));
+                            if (c('#wgt-ask')[0]) {
+                                c('<div align="center"></div>').html(box_690_str).insertBefore('#wgt-ask');
+                            }
+                        }
+                        else if (host === 'weibo.com') {
+                            box_200_str = frameStr(200, 200, frameUrl('新浪微博', 202));
+                            if (c('#pl_rightmod_myinfo')[0]) {
+                                c('<div align="center"></div>').html(box_200_str).insertAfter('#pl_rightmod_myinfo');
+                            }
+                        }
+
+                    })(data.iA, TTSUI);
+                    //结束
+                    return false;
+                }
                 init();
-                //statistics('0', 'PAG', '0', 'PV', 'ALL');
             }
         });
     }
@@ -402,7 +622,11 @@
         if (!MEDIA_config) {
             return false;
         }
-
+        if (!document.getElementById(global + '_union')) {
+            globalBox = document.createElement('div');
+            globalBox.id = global + '_union';
+            document.body.appendChild(globalBox);
+        }
         var oldNum;
         //页面图片 改变
         var domChangeFn = function () {
@@ -447,12 +671,6 @@
                 //页面总pv!
                 statistics('0', 'PAG', '0', 'PV', 'ALL');
                 if (uniqPageEImages.length > MEDIA_config.maxSize) {
-                    //剔除不匹配图片的埋点发送
-                    //var unPinImg = uniqPageEImages.slice(MEDIA_config.maxSize);
-                    /*for (var k = 0, len = unPinImg.length; k < len; k++) {
-                     statistics(unPinImg[k].src, 'IMG', '0', 'PV', 'ALL');
-                     statistics(unPinImg[k].src, 'IMG', '0', 'PV', 'ADN');
-                     }*/
                     uniqPageEImages.length = MEDIA_config.maxSize;
                 }
                 var _imgUrl = '';
@@ -484,21 +702,9 @@
                     }, 800);
                 }
             });
+
         }, 500);
     }
-
-    /*function isHashChanged() {
-     var hash = document.location.hash,
-     hashTimer = null;
-     if(hashTimer) {
-     clearInterval(hashTimer)
-     }
-     hashTimer = setTimeout(function () {
-     if (document.location.hash !== hash) {
-     return true;
-     }
-     }, 500);
-     }*/
 
     /**
      * 初始化图媒体
@@ -506,7 +712,7 @@
     function init_media() {
         TTSUI(document).ready(function () {
             var hashTimer = null;
-            loadCSS(api.upai + 'union/css/p4p-2.0.css?v=@@timestamp');
+            loadCSS('http://img.taotaosou.cn/browser-static/tmt/p4p-2.0.css?t=@@timestamp');
             getConfig();
             //TODO: 给 IE6/7 模拟 haschange 事件，封装到 $(window).bind('hashchange')
             //改变hash值 重新去图片
@@ -519,9 +725,9 @@
                     delMedia();
                     clearTimeout(hashTimer);
                     hashTimer = setTimeout(function () {
-                        hasSim = false;
-                        hasBrand = false;
-                        hasCommon = false;
+                        /*hasSim = false;
+                         hasBrand = false;
+                         hasCommon = false;*/
                         //getConfig();
                         //翻页不请求配置信息
                         init();
@@ -535,9 +741,9 @@
                         hash = document.location.hash;
                         hashChange = false;
                         delMedia();
-                        hasSim = false;
-                        hasBrand = false;
-                        hasCommon = false;
+                        /*hasSim = false;
+                         hasBrand = false;
+                         hasCommon = false;*/
                         //getConfig();
                         //翻页不请求配置信息
                         init();
@@ -549,22 +755,64 @@
     }
 
     /**
+     * 判断指定画报
+     */
+    function matchPicUrl() {
+        var arrUr = ["163.com/photoview", "qq.com/a", "pic.yule.sohu.com"];
+        for (var i = 0; i < arrUr.length; i++) {
+            if (url.indexOf(arrUr[i]) >= 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 画报最后一页广告
+     * @return {Boolean}
+     */
+    function lastPicAds() {
+        if (TTSUI('.endpage')[0] && TTSUI('.endpage')[0].style.display === 'block' ||
+            document.getElementById('photoLayout') && document.getElementById('photoLayout').style.display === 'block' ||
+            document.getElementById('lastCon') && document.getElementById('lastCon').style.display === 'block' ||
+            document.getElementById('adsFrame') && document.getElementById('adsFrame').style.display === 'block') {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * 针对画报翻到最后一页时
      * 弹出广告去除标签
      */
     function clearMedia() {
-        if (url.match(/163.com\/photoview/)) {
+        if (matchPicUrl()) {
             TTSUI('body').bind('click', function () {
                 setTimeout(function () {
-                    if (TTSUI('.endpage')[0] && TTSUI('.endpage')[0].style.display === 'block') {
+                    if (lastPicAds()) {
                         delMedia();
                     }
-                    else if (document.getElementById('photoLayout') && document.getElementById('photoLayout').style.display === 'block') {
-                        delMedia();
-                    }
-                }, 500);
+                }, 1000);
             });
         }
+    }
+
+    /**
+     * 去打点接口Api
+     * @param str 参数字符串
+     * @return {String}
+     */
+    function getImageOfferApi(str) {
+        var offerApi = '';
+        if (url.match(/^.+image.baidu.com\/detail.+&column=(%E6%9C%8D%E9%A5%B0|%E6%98%8E%E6%98%9F).+$/)) {
+            offerApi = api.test + 'data/getImageOffer.do?imgUrls=' + str +
+                '&clientid=1&name=json&imgType=2';
+        } else {
+            offerApi = api.test + 'data/getImageOffer.do?imgUrls=' + str +
+                '&clientid=1&name=json';
+        }
+        offerApi += '&jsonp=?';
+        return offerApi;
     }
 
     /**
@@ -575,17 +823,16 @@
         //TODO: 缺少参数说明
     function regMedia(eImages) {
         //图媒体容器
-        if (!document.getElementById(global + '_media')) {
+        if (!document.getElementById('tts_media')) {
             mediaBox = document.createElement('div');
             mediaBox.className = 'tts_media';
-            document.body.appendChild(mediaBox);
+            globalBox.appendChild(mediaBox);
         }
         var str = '';
         for (var i = 0, len = eImages.length; i < len; i++) {
             str += ',' + encodeURIComponent(eImages[i].src);
         }
-        TTSUI.getJSON(api.test + "data/getImageOffer.do?imgUrls=" + str.substring(1) +
-            "&clientid=1&name=json&jsonp=?", function (data) {
+        TTSUI.getJSON(getImageOfferApi(str.substring(1)), function (data) {
             TTSUI(eImages).each(function (i, eImage) {
                 /**
                  * 首先:请求内部后台打点信息接口, 判断图片当前状态 （可展示于否）
@@ -691,15 +938,12 @@
         this.config = config;
         this.imgObj = eImage;
         this.elm = this.imgObj.img;
-        //this.elmOffset = TTSUI(this.elm).offset();
         this.elmOffset = getOffset(this.elm);
         //展示pv
         statistics('0', 'PAG', '0', 'PV', 'ADY');
-        /*if (!hasMedia) {
-         //展示pv
-         statistics('0', 'PAG', '0', 'PV', 'ADY');
-         hasMedia = true;
-         }*/
+        hasSim = false;
+        hasBrand = false;
+        hasCommon = false;
     }
 
     /**
@@ -937,6 +1181,33 @@
             }
         },
         /**
+         * 取相似广告Api
+         * @param keyWord 关键字
+         * @param tbId 商品id
+         * @return {String}
+         */
+        getSimApi:function (keyWord, tbId) {
+            var simApi = '';
+            if (url.match(/^.+image.baidu.com\/detail.+&column=(%E6%9C%8D%E9%A5%B0|%E6%98%8E%E6%98%9F).+$/)) {
+                simApi = api.kctu + 'adType=1,0,0&keyword=' + encodeURIComponent(keyWord) +
+                    ',0,0&adSize=120,0,0&itemSize=3,0,0' +
+                    '&tbId=' + tbId + '&pid=' + MEDIA_config.id +
+                    '&siteCid=' + MEDIA_config.keyType + '&domain=' + host +
+                    '&isCps=true&cpsTbName=ttsunion&tb_cps_outcode=' + MEDIA_config.id +
+                    '&expId=ttsMedia' + MEDIA_config.id +
+                    '&imgType=2';
+            } else {
+                simApi = api.kctu + 'adType=1,0,0&keyword=' + encodeURIComponent(keyWord) +
+                    ',0,0&adSize=120,0,0&itemSize=3,0,0' +
+                    '&tbId=' + tbId + '&pid=' + MEDIA_config.id +
+                    '&siteCid=' + MEDIA_config.keyType + '&domain=' + host +
+                    '&isCps=true&cpsTbName=ttsunion&tb_cps_outcode=' + MEDIA_config.id +
+                    '&expId=ttsMedia' + MEDIA_config.id;
+            }
+            simApi += '&jsonp=?';
+            return simApi;
+        },
+        /**
          * 请求相似广告
          */
         getSim:function (data) {
@@ -1056,12 +1327,7 @@
                     TTSUI(_this.elm).hover(function () {
                         var hoverTab = _this.siderTab.find('.tabli').eq(0);
                         if (!hoverTab.attr("data-show")) {
-                            TTSUI.getJSON(api.kctu + 'adType=1,0,0&keyword=' + encodeURIComponent(hoverTab.data("simInfo").keys) +
-                                ',0,0&adSize=120,0,0&itemSize=3,0,0' +
-                                '&tbId=' + hoverTab.data("simInfo").id + '&pid=' + MEDIA_config.id +
-                                '&siteCid=' + MEDIA_config.keyType + '&domain=' + host +
-                                '&isCps=true&cpsTbName=ttsunion&tb_cps_outcode=' + MEDIA_config.id +
-                                '&expId=ttsMedia' + MEDIA_config.id + '&jsonp=?', function (data) {
+                            TTSUI.getJSON(_this.getSimApi(hoverTab.data("simInfo").keys, hoverTab.data("simInfo").id), function (data) {
                                 if (_this.config.adStyle === 2) {
                                     //插入打点的商品信息 1
                                     if (data.dadian[0]) {
@@ -1208,12 +1474,7 @@
                         index = tabLi.parents('.J_sidertab').find('.tabli').index(this);
                     if (!tabLi.attr("data-show")) {
                         if (!TTSUI("[categroryId=" + categroryId + "]").attr("data-show")) {
-                            TTSUI.getJSON(api.kctu + 'adType=1,0,0&keyword=' + encodeURIComponent(tabLi.data("simInfo").keys) +
-                                ',0,0&adSize=120,0,0&itemSize=3,0,0' +
-                                '&tbId=' + tabLi.data("simInfo").id + '&pid=' + MEDIA_config.id +
-                                '&siteCid=' + MEDIA_config.keyType + '&domain=' + host +
-                                '&isCps=true&cpsTbName=ttsunion&tb_cps_outcode=' + MEDIA_config.id +
-                                '&expId=ttsMedia' + MEDIA_config.id + '&jsonp=?', function (data) {
+                            TTSUI.getJSON(_this.getSimApi(tabLi.data("simInfo").keys, tabLi.data("simInfo").id), function (data) {
                                 if (_this.config.adStyle === 1) {
                                     //插入打点的商品信息 1
                                     if (data.dadian[0]) {
@@ -1258,12 +1519,7 @@
                         index = TTSUI(this).parents('.J_sim_box').find('.J_marker_box').index(this);
                     if (!markerBox.attr("data-show")) {
                         if (!TTSUI("[categroryId=" + categroryId + "]").attr("data-show")) {
-                            TTSUI.getJSON(api.kctu + 'adType=1,0,0&keyword=' + encodeURIComponent(markerBox.data("simInfo").keys) +
-                                ',0,0&adSize=120,0,0&itemSize=3,0,0' +
-                                '&tbId=' + markerBox.data("simInfo").id + '&pid=' + MEDIA_config.id +
-                                '&siteCid=' + MEDIA_config.keyType + '&domain=' + host +
-                                '&isCps=true&cpsTbName=ttsunion&tb_cps_outcode=' + MEDIA_config.id +
-                                '&expId=ttsMedia' + MEDIA_config.id + '&jsonp=?', function (data) {
+                            TTSUI.getJSON(_this.getSimApi(markerBox.data("simInfo").keys, markerBox.data("simInfo").id), function (data) {
                                 if (_this.config.adStyle === 1) {
                                     //插入打点的商品信息 1
                                     if (data.dadian[0]) {
@@ -1328,12 +1584,7 @@
                     var categroryid = _this.simTab.attr("categroryId");
                     TTSUI('.J_marker_box').hide();
                     if (!TTSUI("[categroryId=" + categroryid + "]").attr("data-show")) {
-                        TTSUI.getJSON(api.kctu + 'adType=1,0,0&keyword=' + encodeURIComponent(item.p4pKey) +
-                            ',0,0&adSize=120,0,0&itemSize=3,0,0' +
-                            '&tbId=' + item.productItemId + '&pid=' + MEDIA_config.id +
-                            '&siteCid=' + MEDIA_config.keyType + '&domain=' + host +
-                            '&isCps=true&cpsTbName=ttsunion&tb_cps_outcode=' + MEDIA_config.id +
-                            '&expId=ttsMedia' + MEDIA_config.id + '&jsonp=?', function (data) {
+                        TTSUI.getJSON(_this.getSimApi(item.p4pKey, item.productItemId), function (data) {
                             if (_this.config.adStyle === 1) {
                                 //插入打点的商品信息 1
                                 if (data.dadian[0]) {
@@ -1400,12 +1651,7 @@
                     thisTab.addClass('active');
                     if (!thisTab.attr("data-show")) {
                         //浮层展示pv
-                        TTSUI.getJSON(api.kctu + 'adType=1,0,0&keyword=' + encodeURIComponent(thisTab.data("simInfo").keys) +
-                            ',0,0&adSize=120,0,0&itemSize=3,0,0' +
-                            '&tbId=' + thisTab.data("simInfo").id + '&pid=' + MEDIA_config.id +
-                            '&siteCid=' + MEDIA_config.keyType + '&domain=' + host +
-                            '&isCps=true&cpsTbName=ttsunion&tb_cps_outcode=' + MEDIA_config.id +
-                            '&expId=ttsMedia' + MEDIA_config.id + '&jsonp=?', function (data) {
+                        TTSUI.getJSON(_this.getSimApi(thisTab.data("simInfo").keys, thisTab.data("simInfo").id), function (data) {
                             if (_this.config.adStyle === 2) {
                                 //插入打点的商品信息 1
                                 if (data.dadian[0]) {
@@ -1452,12 +1698,7 @@
                     var hoverTab = _this.siderTab.find('.tabli').eq(0);
                     if (!hasSim) {
                         if (!hoverTab.attr("data-show")) {
-                            TTSUI.getJSON(api.kctu + 'adType=1,0,0&keyword=' + encodeURIComponent(hoverTab.data("simInfo").keys) +
-                                ',0,0&adSize=120,0,0&itemSize=3,0,0' +
-                                '&tbId=' + hoverTab.data("simInfo").id + '&pid=' + MEDIA_config.id +
-                                '&siteCid=' + MEDIA_config.keyType + '&domain=' + host +
-                                '&isCps=true&cpsTbName=ttsunion&tb_cps_outcode=' + MEDIA_config.id +
-                                '&expId=ttsMedia' + MEDIA_config.id + '&jsonp=?', function (data) {
+                            TTSUI.getJSON(_this.getSimApi(hoverTab.data("simInfo").keys, hoverTab.data("simInfo").id), function (data) {
                                 if (_this.config.adStyle === 2) {
                                     //插入打点的商品信息 1
                                     if (data.dadian[0]) {
@@ -1537,8 +1778,6 @@
                 '&expId=ttsMedia' + MEDIA_config.id + '&jsonp=?', function (data) {
                 if (_this.config.adStyle === 1) {
                     if (data.pinpai[0]) {
-                        //console.log('展示 brand  广告');
-                        //console.log('展示 brand 广告 all');
                         statistics(_this.imgObj.src, 'IMG', '0', 'PV', 'BR1');
                         statistics(_this.imgObj.src, 'IMG', '0', 'PV', 'ALL');
                         _this.showBrand(data.pinpai[0]);
@@ -1586,7 +1825,7 @@
                     //var popTime = _this.config.popTime;
                     if (!_this.brandObj.attr("data-show")) {
                         //第一张默认展示埋点
-                        //console.log('//第一张默认展示埋点');
+                        //('//第一张默认展示埋点');
                         statistics(_this.elm.src, 'ADF', 'FBR1', 'PV', 'DEF');
                     }
                     _this.brandObj.show().attr("data-show", "isData");
@@ -1598,7 +1837,7 @@
                 //图片触发广告
                 TTSUI(elm).hover(function () {
                     if (!_this.brandObj.attr("data-show")) {
-                        //console.log('图片触发埋点brand');
+                        //('图片触发埋点brand');
                         statistics(_this.imgObj.src, 'ADF', 'FBR1', 'PV', 'IMG');
                     }
                     _this.brandObj.show().attr("data-show", "isData");
@@ -1613,7 +1852,7 @@
                 });
             } else if (_this.config.hover === 2) {  //广告一直展示
                 _this.brandObj.show();
-                //console.log('brand 全部默认展示');
+                //('brand 全部默认展示');
                 _this.brandObj.attr("data-show", "isData");
                 statistics(_this.imgObj.src, 'ADF', 'FBR1', 'PV', 'DEF');
             }
@@ -1627,13 +1866,13 @@
                 TTSUI('.pin_media_t').show();
             });
             _this.brandObj.click(function () {
-                //console.log('brand 点击埋点');
+                //('brand 点击埋点');
                 statistics(_this.imgObj, 'ADF', 'FBR1', 'CK', 'BA1');
             });
             TTSUI('.pin_brand_close').click(function () {
                 TTSUI(this).parents('.J_brand_box').remove();
                 //关闭 埋点
-                //console.log('brand 关闭=========');
+                //('brand 关闭=========');
                 statistics(_this.imgObj.src, 'ADF', 'FBR1', 'CK', 'CLO');
             });
             _this.iniResize();
@@ -1681,7 +1920,7 @@
                     break;
                 case 2:
                     _this.brandTAtmpl = '<div class="brand_alink"><img src="${image}" height="195" width="25" alt="">' +
-                        '<a href="${href}" class="TA_alink" target="_blank" title="${title}"></a></div>';
+                        '</div>';
                     _this.brandTAswftmpl = '<div class="brand_alink"><object width="25" height="195" align="middle">' +
                         '<param name="allowScriptAccess" value="never"><param name="quality" value="high">' +
                         '<param name="wmode" value="transparent">' +
@@ -1689,9 +1928,14 @@
                         '<embed wmode="transparent" src="${image}"' +
                         'quality="high" width="25" height="195" align="middle" allowscriptaccess="never" type="application/x-shockwave-flash"></object>' +
                         '<a href="${href}" class="TA_alink" target="_blank" title="${title}"></a></div>';
-                    _this.brandADtmpl = '<div class="J_tip_wrap brand_tip_wrap">' +
+                    /*_this.brandADtmpl = '<div class="J_tip_wrap brand_tip_wrap">' +
                         '<img src="${media}" height="220" width="300" alt="">' +
-                        '<a href="${href}" class="AD_alink" target="_blank" title="${title}"></a></div>';
+                        '<a href="${href}" class="AD_alink" target="_blank" title="${title}"></a></div>';*/
+                    _this.brandADtmpl = '<div class="J_tip_wrap brand_tip_wrap">' +
+                        '<iframe frameborder="0" marginheight="0" marginwidth="0" border="0" scrolling="no" width="300" height="220"' +
+                        //'src="http://show.kc.taotaosou.com/imgShow.do?image=&href="></iframe>' +
+                        'src="http://show.kc.taotaosou.com/imgShow.do?image=${media}&href=${href}&title=${title}"></iframe>' +
+                        '</div>';
                     _this.brandADswftmpl = '<div class="J_tip_wrap brand_tip_wrap"><object width="300" height="220" align="middle">' +
                         '<param name="allowScriptAccess" value="never"><param name="quality" value="high">' +
                         '<param name="wmode" value="transparent">' +
@@ -1732,16 +1976,21 @@
             //品牌广告模板2
             _this.getBrandTmpl(_this.config.adStyle);
             _this.brandTab = TTSUI('<div class="J_tabli"></div>');
+
+            var bData = data;
+            TTSUI.extend(bData, {
+               title: encodeURIComponent(data.title)
+            });
             //区分 图片还是flash
             if (data.image.match(/^.+\.swf$/i)) {
-                TTSUI.tmpl(_this.brandTAswftmpl, data).appendTo(_this.brandTab);
+                TTSUI.tmpl(_this.brandTAswftmpl, bData).appendTo(_this.brandTab);
             } else {
-                TTSUI.tmpl(_this.brandTAtmpl, data).appendTo(_this.brandTab);
+                TTSUI.tmpl(_this.brandTAtmpl, bData).appendTo(_this.brandTab);
             }
             if (data.media.match(/^.+\.swf$/i)) {
-                TTSUI.tmpl(_this.brandADswftmpl, data).appendTo(_this.brandTab);
+                TTSUI.tmpl(_this.brandADswftmpl, bData).appendTo(_this.brandTab);
             } else {
-                TTSUI.tmpl(_this.brandADtmpl, data).appendTo(_this.brandTab);
+                TTSUI.tmpl(_this.brandADtmpl, bData).appendTo(_this.brandTab);
             }
             _this.brandTab.appendTo(_this.brandObj);
             _this.brandObj.css({
@@ -1774,7 +2023,7 @@
             _this.brandTab.hover(function () {
                 showBrand();
                 if (!_this.brandTab.attr("data-show")) {
-                    //console.log('图片触发埋点brand');
+                    //('图片触发埋点brand');
                     statistics(_this.imgObj.src, 'IMGBART300220', 'AD', 'PV', '0');
                 }
                 statistics(_this.imgObj.src, 'IMGBART300220', 'TA', 'TH', '0');
@@ -1794,7 +2043,7 @@
                 //var popTime = _this.config.popTime;
                 if (!_this.brandTab.attr("data-show")) {
                     //第一张默认展示埋点
-                    //console.log('//第一张默认展示埋点');
+                    //('//第一张默认展示埋点');
                     statistics(_this.elm.src, 'IMGBART300220', 'AD', 'PV', '0');
                 }
                 showBrand();
@@ -1808,7 +2057,7 @@
                 //图片触发广告
                 TTSUI(_this.elm).hover(function () {
                     if (!_this.brandTab.attr("data-show")) {
-                        //console.log('图片触发埋点brand');
+                        //('图片触发埋点brand');
                         statistics(_this.imgObj.src, 'IMGBART300220', 'AD', 'PV', '0');
                     }
                     showBrand();
