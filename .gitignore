@@ -1,0 +1,8 @@
+# window:
+.gitigore
+.idea
+dist/*
+node_modules
+src/taobao/js/sea.js
+npm-debug.log
+*.DS_Store
