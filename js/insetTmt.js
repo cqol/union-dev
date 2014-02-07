@@ -17,9 +17,11 @@
         'trade.taobao.com',
         'cart.taobao.com',
         'ju.taobao.com',
+        'detail.ju.taobao.com',
         'buy.taobao.com',
         'wuliu.taobao.com',
-        'favorite.taobao.com',
+        //'favorite.taobao.com',
+        'shoucang.taobao.com',
         'i.taobao.com',
         'buy.tmall.com',
         'www.7k7k.com',
@@ -111,6 +113,8 @@
         isTrade: host === 'trade.taobao.com',
         //聚划算页
         isJu: host === 'ju.taobao.com',
+
+        isJuDetail: host === 'detail.ju.taobao.com',
         //淘宝 物流页
         isWuliu: host === 'wuliu.taobao.com',
 
@@ -124,7 +128,7 @@
 
         isTMBuy: host === 'buy.tmall.com',
 
-        isFav: host === 'favorite.taobao.com',
+        isFav: host === 'shoucang.taobao.com',
 
         isITB: host === 'i.taobao.com',
 
@@ -344,6 +348,13 @@
                 model.tmt.get(adlist, 235, AdWrap);
             }
         }
+        else if (siteName.isJuDetail) {
+            if ($('.detail-detail')[0]) {
+                AdWrap = $('<div style="height: 90px; overflow: hidden;"></div>');
+                AdWrap.insertBefore($('.detail-detail'));
+                model.tmt.get(adlist, 235, AdWrap);
+            }
+        }
         else if (siteName.isCart) {
             if ($('#J_Cart')[0]) {
                 AdWrap = $('<div></div>');
@@ -372,9 +383,9 @@
 
         }
         else if (siteName.isFav) {
-            if ($('#fav-list')[0]) {
+            if ($('.fav-list')[0]) {
                 doubleAdWrap = $('<div style="height: 150px; width: 1070px; margin: 0 auto;"></div>');
-                doubleAdWrap.insertAfter($('#fav-list'));
+                doubleAdWrap.insertAfter($('.fav-list'));
                 model.tmt.get(adlist, 245, doubleAdWrap);
                 model.tmt.get(adlist, 246, doubleAdWrap, 'right');
             }
