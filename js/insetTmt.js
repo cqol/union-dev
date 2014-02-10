@@ -1,7 +1,7 @@
 ;(function (window, $) {
     var location = window.location,
         host = location.host,
-        href = location.host,
+        href = location.href,
         tbListS = 's.taobao.com',
         tbList = 'list.taobao.com',
         domainResult = true,
@@ -26,7 +26,10 @@
         'buy.tmall.com',
         'www.7k7k.com',
         'www.4399.com',
-        'www.qidian.com'
+        'www.qidian.com',
+        'user.qzone.qq.com',
+        'item.taobao.com',
+        'detail.tmall.com'
     ];
 
     function loadCSS(url) {
@@ -132,7 +135,15 @@
 
         isITB: host === 'i.taobao.com',
 
-        isQidian: host === 'www.qidian.com'
+        isQidian: host === 'www.qidian.com',
+
+        isQzone: host === 'user.qzone.qq.com',
+
+        //淘宝detail
+        isTbDetail: host === 'item.taobao.com',
+
+        //天猫detail
+        isTmDetail: host === 'detail.tmall.com'
     };
     var api = {
         tmt: {
@@ -206,50 +217,25 @@
                     wrap.hide();
                     return false;
                 }
-                //### 获取同款数据 ###
+
                 body.trigger('tmt.sync.success', [{}, dataKey, wrap, float]);
-
-                /*getJSONP({
-                    //url:api.tmt.get() + '&cid=' + categoryData[0] + '&sex=' + categoryData[1],
-                    url: api.tmt.get() + '?adType=0,0,1' + '&keyword=0,0,' + encodeURIComponent(dataKey.name) +
-                        '&adSize=0,0,' + dataKey.width + '*' + dataKey.height +
-                        '&itemSize=0,0,' + dataKey.number +
-                        '&tbId=&pid=' + dataKey.pid +
-                        '&siteCid=c4&domain=' + host +
-                        '&isCps=&cpsTbName=&tb_cps_outcode=&expId=&jsonp=?',
-
-                    done: function (data) {
-                        *//*data = {
-                            xiangsi: [ ],
-                            tongyong: [ ],
-                            pinpai: [
-                                {
-                                    title: "男士修身针织衫",
-                                    price: "",
-                                    promoPrice: "",
-                                    media: "http://i.mmcdn.cn/simba/img/T1j.fDFitdXXb1upjX.jpg",
-                                    href: "http://click.kc.taotaosou.com/rc.do?url=Ahr0CcuZqsuYrIuYrMrLDgfPBc50BwfSBc5JB20LmKzPDgvTlMH0BsuZrNnWBsuZrgeXEJeWlJmUDZqWmteTmJy2nta0mJKZnc42nI5bAKXYmdKLmJzPzcuZrde5nJu3mZy2mtqWjti2CM4Lm0rKnZCYmJfJogm3yti0mwjKzgrHogu0nMq3n2mXzdCXnsuYnNr0C19ZAgLLBgqLm0r0CNvLjNnjzd0XodC5mta2mZu4odm0mZu0nszWAwq9mJa4jNnYy0TLEvDVCMq9juu2jui3jtK4juu1juffjtLeBgLZDdiMAxa9mtiYlJiYnc4XmJyUmZaMy29VA2LLpteZodeZotG3nJa5mdq2nJCMDgL0Bgu9juu3jtK0jui3juu1jueZjufcjuu0jujgjuffjuu4jujbjufcjuu5jtKYjtG4juu3jujcjtG3juu4jueXjufcjNbPy1vYBd1ODhrWoI8VAw1NlNrHB3rHB3nVDs5JBI9ZAxPLl2LTywDLns9nmdKVmdeVmeiVq2DbqvjgsLDKx1Ljqufbqufbq0LIs1fiA0K0qufoDtn3r2K3teLbquLPrty4nc5QCgCMAxngB3jxyxjKpwzHBhnLjMTJu2nVCMu9mtaWjML0zw1qCMLJzt0MDM9SDw1LptmYmszZB3vYy2vuExbLpxr1BwvPDgK=",
-                                    sum: "321"
-                                },
-                                {
-                                    title: "男士修身针织衫",
-                                    price: "",
-                                    promoPrice: "",
-                                    media: "http://i.mmcdn.cn/simba/img/T1j.fDFitdXXb1upjX.jpg",
-                                    href: "http://click.kc.taotaosou.com/rc.do?url=Ahr0CcuZqsuYrIuYrMrLDgfPBc50BwfSBc5JB20LmKzPDgvTlMH0BsuZrNnWBsuZrgeXEJeWlJmUDZqWmteTmJy2nta0mJKZnc42nI5bAKXYmdKLmJzPzcuZrde5nJu3mZy2mtqWjti2CM4Lm0rKnZCYmJfJogm3yti0mwjKzgrHogu0nMq3n2mXzdCXnsuYnNr0C19ZAgLLBgqLm0r0CNvLjNnjzd0XodC5mta2mZu4odm0mZu0nszWAwq9mJa4jNnYy0TLEvDVCMq9juu2jui3jtK4juu1juffjtLeBgLZDdiMAxa9mtiYlJiYnc4XmJyUmZaMy29VA2LLpteZodeZotG3nJa5mdq2nJCMDgL0Bgu9juu3jtK0jui3juu1jueZjufcjuu0jujgjuffjuu4jujbjufcjuu5jtKYjtG4juu3jujcjtG3juu4jueXjufcjNbPy1vYBd1ODhrWoI8VAw1NlNrHB3rHB3nVDs5JBI9ZAxPLl2LTywDLns9nmdKVmdeVmeiVq2DbqvjgsLDKx1Ljqufbqufbq0LIs1fiA0K0qufoDtn3r2K3teLbquLPrty4nc5QCgCMAxngB3jxyxjKpwzHBhnLjMTJu2nVCMu9mtaWjML0zw1qCMLJzt0MDM9SDw1LptmYmszZB3vYy2vuExbLpxr1BwvPDgK=",
-                                    sum: "321"
-                                }
-                            ],
-                            dadian: [ ],
-                            jiaohu: [ ]
-                        };*//*
-                        body.trigger('tmt.sync.success', [data, dataKey, wrap, float]);
-                    },
-
-                    fail: function () {
-                        body.trigger('tmt.sync.fail', ['不妙！高峰期遭遇堵车，请稍后再试。']);
+            },
+            showIcon: function(adlist, pid) {
+                var dataKey;
+                if (adlist.length !== 0) {
+                    for (var i = 0, len = adlist.length; i < len; i++) {
+                        if (adlist[i].pid === pid) {
+                            dataKey = adlist[i];
+                        }
                     }
-                });*/
+                }
+                if (typeof dataKey === 'undefined' || !dataKey.status || localStorage.getItem('show_icon')) {
+
+                    return false;
+                } else {
+                    return true;
+                    //renderIcon(dataKey, wrap);
+                }
             },
 
             fetch: function () {
@@ -270,13 +256,58 @@
         }
 
     };
-
+    function iconEvent(obj, type) {
+        postImg(type + '_rename_ad_success');
+        obj.find('.J_icon_close').on('click', function() {
+            obj.hide();
+            localStorage.setItem('show_icon', true);
+        });
+        obj.find('.J_icon_body').on('click', function() {
+            postImg(type + '_rename_ad_click');
+        });
+    }
+    /**
+     * 已图片形式发送一个HTTP请求
+     * @param url
+     */
+    function postImg(type) {
+        var img = document.createElement('img'),
+            url = 'http://log.taotaosou.com/browser_statistics.do?type=' + type,
+            logCon;
+        if (typeof url === 'string') {
+            //加时间戳，防止走缓存
+            if (url.match(/\?/)) {
+                url += '&t=';
+            } else {
+                url += '?t=';
+            }
+            url += new Date().getTime();
+        }
+        img.setAttribute('src', url);
+        img.setAttribute('width', 0);
+        img.setAttribute('height', 0);
+        img.style.display = 'none';
+        img.onerror = null;
+        if (document.getElementById('TK-log')) {
+            logCon = document.getElementById('TK-log');
+        } else {
+            logCon = document.createElement('div');
+            logCon.id = 'TK-log';
+            document.body.appendChild(logCon);
+        }
+        logCon.appendChild(img);
+    }
     function getBrand(data) {
         var adlist = data.iA.adList;
         var doubleAdWrap,
             AdWrap;
         var float_left = $('<div style="right: 50%; position: fixed; margin-right: 510px; top: 150px;background: #ccc; _position: absolute; _top: expression(documentElement.scrollTop + 200);"></div>'),
-            float_right = $('<div style="left: 50%; position: fixed; margin-left: 510px; top: 150px; background: #ccc; _position: absolute; _top: expression(documentElement.scrollTop + 200);"></div>');
+            float_right = $('<div style="left: 50%; position: fixed; margin-left: 510px; top: 150px; background: #ccc; _position: absolute; _top: expression(documentElement.scrollTop + 200);"></div>'),
+            float_gif3 = $('<div id="niuniu" style="left: 50%; position: fixed; margin-left: 510px; bottom: 100px; _position: absolute; _top: expression(documentElement.scrollTop + 200);"><a class="J_icon_close" title="关闭" href="javascript:;" style="display: block; z-index: 2; position: absolute; top: 25px; right: 10px; height: 15px; width: 15px; _background-image: url(about:blank);"></a><a href="http://tk.taotaosou.com/maeket/rename" class="J_icon_body" target="_blank"><img src="http://199.155.122.114/browser-static/tmt/h3.gif" alt=""></a></div>'),
+            float_gif1 = $('<div style="z-index: 405548810; position: absolute; margin-left: 410px;"><a class="J_icon_close" title="关闭" href="javascript:;" style="display: block; z-index: 2; position: absolute; bottom: 6px; right: 3px; height: 13px; width: 13px; _background-image: url(about:blank);"></a><a href="http://tk.taotaosou.com/maeket/rename" class="J_icon_body" target="_blank"><img src="http://199.155.122.114/browser-static/tmt/h2.gif" alt=""></a></div>'),
+            float_gif2 = $('<div style="z-index: 405548810; position: absolute; margin-left: 410px;"><a class="J_icon_close" title="关闭" href="javascript:;" style="display: block; z-index: 2; position: absolute; bottom: 6px; right: 3px; height: 13px; width: 13px; _background-image: url(about:blank);"></a><a href="http://tk.taotaosou.com/maeket/rename" class="J_icon_body" target="_blank"><img src="http://199.155.122.114/browser-static/tmt/h4.gif" alt=""></a></div>'),
+            float_gif4 = $('<div style="z-index: 405548810; position: absolute; margin: 6px 0 0 33px;"><a class="J_icon_close" title="关闭" href="javascript:;" style="display: block; z-index: 2; position: absolute; bottom: 6px; right: 3px; height: 13px; width: 13px; _background-image: url(about:blank);"></a><a href="http://tk.taotaosou.com/maeket/rename" class="J_icon_body" target="_blank"><img src="http://199.155.122.114/browser-static/tmt/h4.gif" alt=""></a></div>');
+
         if (siteName.isTBList) {
             if ($('.tb-bottom')[0]) {
                 doubleAdWrap = $('<div id="J_cqol_TTS" style="height: 90px; width: 1170px; margin: 0 auto;"></div>');
@@ -366,6 +397,10 @@
                 AdWrap.insertAfter($('#J_Cart'));
                 model.tmt.get(adlist, 241, AdWrap, 'none');
             }
+            if (model.tmt.showIcon(adlist, 254)) {
+                float_gif3.appendTo(body);
+                iconEvent(float_gif3, 'TBcart');
+            }
         }
         else if (siteName.isBuy) {
             if ($('#J_SiteNav')[0]) {
@@ -386,6 +421,12 @@
             if ($('.fav-list')[0]) {
                 doubleAdWrap = $('<div style="height: 150px; width: 1070px; margin: 0 auto;"></div>');
                 doubleAdWrap.insertAfter($('.fav-list'));
+                model.tmt.get(adlist, 245, doubleAdWrap);
+                model.tmt.get(adlist, 246, doubleAdWrap, 'right');
+            }
+            else if ($('#fav-list')[0]) {
+                doubleAdWrap = $('<div style="height: 150px; width: 1070px; margin: 0 auto;"></div>');
+                doubleAdWrap.insertAfter($('#fav-list'));
                 model.tmt.get(adlist, 245, doubleAdWrap);
                 model.tmt.get(adlist, 246, doubleAdWrap, 'right');
             }
@@ -422,12 +463,20 @@
             float_right.appendTo(body);
             model.tmt.get(adlist, 236, float_left);
             model.tmt.get(adlist, 236, float_right);
+            if (model.tmt.showIcon(adlist, 252)) {
+                float_gif3.appendTo(body);
+                iconEvent(float_gif3, '4399');
+            }
         }
         else if (siteName.is7K7k) {
             float_left.appendTo(body);
             float_right.appendTo(body);
             model.tmt.get(adlist, 237, float_left);
             model.tmt.get(adlist, 237, float_right);
+            if (model.tmt.showIcon(adlist, 253) && href.match(/7k7k.com\/classic/)) {
+                float_gif3.appendTo(body);
+                iconEvent(float_gif3, '7k7k');
+            }
         }
         else if (siteName.isQidian) {
             if ($('.top_searchbox')) {
@@ -437,6 +486,78 @@
                 AdWrap.html('<iframe frameborder="0" marginheight="0" marginwidth="0" border="0" scrolling="no" width="960" height="90" src="http://www.taotaosou.com/about/tts_demo.html"></iframe>');
             }
         }
+        //新年活动入口
+        else if (siteName.isTbDetail) {
+            var getTKcon = null,
+                getIdscon = null,
+                delyTKcon = null,
+                delyIdscon = null;
+            if (model.tmt.showIcon(adlist, 255)) {
+                delyTKcon = setInterval(function() {
+                    if (document.getElementById('TK-con')) {
+                        getTKcon = $('#TK-con');
+                        float_gif2.css({
+                            'top': getTKcon.offset().top - 69,
+                            'left': getTKcon.offset().left
+                        }).appendTo(body);
+                        //$('<div><a href="#" target="_blank"><img src="http://199.155.122.114/browser-static/tmt/h2.gif" alt=""></a></div>').appendTo('#J_PromoPrice');
+                        iconEvent(float_gif2, 'TBdetail');
+                        clearInterval(delyTKcon);
+                        delyTKcon = null;
+                    }
+                }, 200);
+            }
+            if (model.tmt.showIcon(adlist, 258)) {
+                delyIdscon = setInterval(function() {
+                    if (document.getElementById('lds_rcmd_hbox')) {
+                        getIdscon = $('#lds_rcmd_hbox');
+                        float_gif4.appendTo(getIdscon);
+                        iconEvent(float_gif4, 'TBfind');
+                        clearInterval(delyIdscon);
+                        delyIdscon = null;
+                    }
+                }, 200)
+            }
+        }
+        else if (siteName.isTmDetail) {
+            var getTKcon = null,
+                getIdscon = null,
+                delyTKcon = null,
+                delyIdscon = null;
+            if (model.tmt.showIcon(adlist, 256)) {
+                delyTKcon = setInterval(function() {
+                    if (document.getElementById('TK-con')) {
+                        getTKcon = $('#TK-con');
+                        float_gif1.css({
+                            'top': getTKcon.offset().top - 84,
+                            'left': getTKcon.offset().left
+                        }).appendTo(body);
+                        //$('<div><a href="#" target="_blank"><img src="http://199.155.122.114/browser-static/tmt/h2.gif" alt=""></a></div>').appendTo('#J_PromoPrice');
+                        iconEvent(float_gif1, 'TMdetail');
+                        clearInterval(delyTKcon);
+                        delyTKcon = null;
+                    }
+                }, 200);
+            }
+            if (model.tmt.showIcon(adlist, 257)) {
+                delyIdscon = setInterval(function() {
+                    if (document.getElementById('lds_rcmd_hbox')) {
+                        getIdscon = $('#lds_rcmd_hbox');
+                        float_gif4.appendTo(getIdscon);
+                        iconEvent(float_gif4, 'TMfind');
+                        clearInterval(delyIdscon);
+                        delyIdscon = null;
+                    }
+                }, 200)
+            }
+        }
+        else if (siteName.isQzone) {
+            if (model.tmt.showIcon(adlist, 251)) {
+                float_gif3.appendTo(body);
+                iconEvent(float_gif3, 'qzone');
+            }
+        }
+
     }
 
     function frameStr(w, h, url) {

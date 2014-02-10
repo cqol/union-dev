@@ -193,6 +193,11 @@ module.exports = function (grunt) {
                 files:[
                     {expand:true, cwd:'<%= union.file.img %>', src:'*', dest:'<%= build.file.img %>'}
                 ]
+            },
+            tmt: {
+                files:[
+                    {expand: true, cwd: 'img/', src: '*', dest: 'build/'}
+                ]
             }
         },
         cssmin:{
@@ -262,6 +267,8 @@ module.exports = function (grunt) {
 
         grunt.task.run('jshint:bubble');
         grunt.task.run('uglify:bubble');
+
+        grunt.task.run('copy:tmt');
         grunt.task.run('compress:tmt');
 
         grunt.task.run('jshint:center');

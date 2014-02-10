@@ -62,7 +62,7 @@
 
     // 嵌入广告
     function insetAD() {
-        var rhost = /taobao|7k7k|4399|tmall|qidian/;
+        var rhost = /taobao|7k7k|4399|tmall|qidian|user.qzone.qq.com/;
         if (host.match(rhost)) {
             load('http://img.taotaosou.cn/browser-static/tmt/insetTmt.js?t=@@timestamp');
         }

@@ -35,7 +35,7 @@
 
 .tts_sidertab .t_bg, .tts_sidertab .b_bg, .tts_sidertab .alink, .tts_sidertab .active .alink
 .tts_sidertab .alink:hover, .tts_sidertab .active .t_bg, .tts_sidertab .active .b_bg {
-    background: url(http://ttsmedia.b0.upaiyun.com/union/img/btn_bg_0313.png) no-repeat;
+    background: url(http://img.taotaosou.cn/browser-static/tmt/btn_bg_0313.png) no-repeat;
 }
 
 .tts_sidertab .alink:hover, .tts_sidertab .active .alink {
@@ -87,9 +87,9 @@
     width: 34px;
     height: 34px;
     cursor: pointer;
-    background: url(http://ttsmedia.b0.upaiyun.com/union/img/pin_sim_pointer.png) no-repeat;
+    background: url(http://img.taotaosou.cn/browser-static/tmt/pin_sim_pointer.png) no-repeat;
     _background-image: none;
-    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src = "http://ttsmedia.b0.upaiyun.com/union/img/pin_sim_pointer.png", sizingMethod = "scale");
+    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src = "http://img.taotaosou.cn/browser-static/tmt/pin_sim_pointer.png", sizingMethod = "scale");
 }
 
 .tts_marker a:hover, .tts_marker_box .active a {
@@ -99,9 +99,9 @@
     width: 34px;
     height: 34px;
     cursor: pointer;
-    background: url(http://ttsmedia.b0.upaiyun.com/union/img/pin_sim_pointer_hover.png) no-repeat;
+    background: url(http://img.taotaosou.cn/browser-static/tmt/pin_sim_pointer_hover.png) no-repeat;
     _background-image: none;
-    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src = "http://ttsmedia.b0.upaiyun.com/union/img/pin_sim_pointer_hover.png", sizingMethod = "scale");
+    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src = "http://img.taotaosou.cn/browser-static/tmt/pin_sim_pointer_hover.png", sizingMethod = "scale");
 }
 
 .tts_tip_wrap {
@@ -119,9 +119,9 @@
     top: 0;
     position: absolute;
     z-index: -1;
-    background: url(http://ttsmedia.b0.upaiyun.com/union/img/bg-tip-0313.png) no-repeat;
+    background: url(http://img.taotaosou.cn/browser-static/tmt/bg-tip-0313.png) no-repeat;
     _background-image: none;
-    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src = "http://ttsmedia.b0.upaiyun.com/union/img/bg-tip-0313.png", sizingMethod = "scale");
+    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src = "http://img.taotaosou.cn/browser-static/tmt/bg-tip-0313.png", sizingMethod = "scale");
 }
 
 .tts_tip_wrap .close {
@@ -148,7 +148,7 @@
 }
 
 .tts_tip_wrap .tts_load_wrap {
-    background: url(http://ttsmedia.b0.upaiyun.com/union/img/ajax_load.gif) center center no-repeat;
+    background: url(http://img.taotaosou.cn/browser-static/tmt/ajax_load.gif) center center no-repeat;
     height: 280px;
     width: 272px;
 }
@@ -175,7 +175,7 @@
 }
 
 .tts_tip_wrap .img {
-    background: url(http://ttsmedia.b0.upaiyun.com/union/img/ajax_load.gif) center center no-repeat;
+    background: url(http://img.taotaosou.cn/browser-static/tmt/ajax_load.gif) center center no-repeat;
 }
 
 .tts_tip_wrap .img a {
@@ -201,9 +201,9 @@
     font-weight: bold;
     color: #fff;
     height: 16px;
-    background: url(http://ttsmedia.b0.upaiyun.com/union/img/price_bg_0313.png) no-repeat;
+    background: url(http://img.taotaosou.cn/browser-static/tmt/price_bg_0313.png) no-repeat;
     _background-image: none;
-    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src = "http://ttsmedia.b0.upaiyun.com/union/img/price_bg_0313.png", sizingMethod = "scale");
+    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src = "http://img.taotaosou.cn/browser-static/tmt/price_bg_0313.png", sizingMethod = "scale");
     line-height: 16px;
     position: absolute;
     right: 0;
@@ -266,10 +266,10 @@
     width: 13px;
     height: 12px;
     z-index: 33;
-    background: url(http://ttsmedia.b0.upaiyun.com/union/img/brand_close.png) no-repeat;
+    background: url(http://img.taotaosou.cn/browser-static/tmt/brand_close.png) no-repeat;
     cursor: pointer;
     _background-image: none;
-    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src = "http://ttsmedia.b0.upaiyun.com/union/img/brand_close.png", sizingMethod = "scale");
+    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src = "http://img.taotaosou.cn/browser-static/tmt/brand_close.png", sizingMethod = "scale");
 }
 
 .tts_media .brand_box .pin_media {
@@ -277,9 +277,9 @@
     position: absolute;
     right: 0;
     bottom: 0;
-    background: url(http://ttsmedia.b0.upaiyun.com/union/img/media_bg.png) no-repeat;
+    background: url(http://img.taotaosou.cn/browser-static/tmt/media_bg.png) no-repeat;
     _background-image: none;
-    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src = "http://ttsmedia.b0.upaiyun.com/union/img/media_bg.png", sizingMethod = "scale");
+    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src = "http://img.taotaosou.cn/browser-static/tmt/media_bg.png", sizingMethod = "scale");
     font-size: 12px;
     line-height: 16px;
     padding-left: 12px;
@@ -295,9 +295,9 @@
     width: 19px;
     right: 0;
     bottom: 0;
-    background: url(http://ttsmedia.b0.upaiyun.com/union/img/media_bg_t.png) no-repeat;
+    background: url(http://img.taotaosou.cn/browser-static/tmt/media_bg_t.png) no-repeat;
     _background-image: none;
-    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src = "http://ttsmedia.b0.upaiyun.com/union/img/media_bg_t.png", sizingMethod = "scale");
+    _filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src = "http://img.taotaosou.cn/browser-static/tmt/media_bg_t.png", sizingMethod = "scale");
     font-size: 12px;
     line-height: 16px;
     color: #fff;
@@ -347,7 +347,7 @@
     width: 25px;
     height: 25px;
     cursor: pointer;
-    background: url(http://ttsmedia.b0.upaiyun.com/union/img/close_01.png) no-repeat;
+    background: url(http://img.taotaosou.cn/browser-static/tmt/close_01.png) no-repeat;
 }
 
 /*command 20130705 for bubbleFrame*/
