@@ -405,7 +405,7 @@
                             box_690_str,
                             box_300 = c('<div align="center"></div>'),
                             box_300_str,
-                            box_960_str,
+                            //box_960_str,
                             box_230_str,
                             box_200_str,
                             box_280_str,
@@ -549,25 +549,25 @@
                                 box_980.insertBefore(TTSUI('#tvBgArea'));
                             }
                         }
-                        else if (host === 'www.4399.com') {
+                        /*else if (host === 'www.4399.com') {
                             box_960_str = frameStr(960, 96, frameUrl('4399', 209));
                             if (c('#blank_hs')[0]) {
                                 c('<div align="center"></div>').html(box_960_str).insertAfter('#blank_hs');
                             }
-                        }
-                        else if (host === 'news.4399.com') {
+                        }*/
+                        /*else if (host === 'news.4399.com') {
                             box_960_str = frameStr(960, 96, frameUrl('news4399', 210));
                             if (c('.sch_my')[0]) {
                                 c('<div style="text-align: center;" align="center"></div>').html(box_960_str).insertAfter('.sch_my');
                             }
-                        }
-                        else if (host === 'www.7k7k.com') {
+                        }*/
+                        /*else if (host === 'www.7k7k.com') {
                             box_960_str = frameStr(960, 96, frameUrl('7k7k', 211));
                             var best = c('.best').eq(0);
                             if (best[0]) {
                                 c('<div align="center"></div>').html(box_960_str).insertAfter(best);
                             }
-                        }
+                        }*/
                         else if (host === 't.qq.com') {
                             box_280_str = frameStr(280, 240, frameUrl('腾讯微博', 197));
                             if (c('.new_sc_rmdfollow')[0]) {
