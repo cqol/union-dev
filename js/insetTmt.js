@@ -30,7 +30,8 @@
         'user.qzone.qq.com',
         'item.taobao.com',
         'detail.tmall.com',
-        'baoxian.taobao.com'
+        'baoxian.taobao.com',
+        'licai.taobao.com'
     ];
 
     function loadCSS(url) {
@@ -147,7 +148,9 @@
         isTmDetail: host === 'detail.tmall.com',
 
         //淘宝保险
-        isBaoxiang: host === 'baoxian.taobao.com'
+        isBaoxiang: host === 'baoxian.taobao.com',
+
+        isLicai: host === 'licai.taobao.com'
     };
     var api = {
         tmt: {
@@ -262,8 +265,10 @@
     };
     function iconEvent(obj, type) {
         postImg(type + '_rename_ad_success');
+        obj.find('.J_icon_body').attr('href','http://tk.taotaosou.com/market/rename/index.html?ditch＝' + type);
         obj.find('.J_icon_close').on('click', function() {
             obj.hide();
+            postImg(type + '_rename_ad_close');
             localStorage.setItem('show_icon', true);
         });
         obj.find('.J_icon_body').on('click', function() {
@@ -471,6 +476,13 @@
                 AdWrap = $('<div></div>');
                 AdWrap.insertBefore($('.floor-car'));
                 model.tmt.get(adlist, 259, AdWrap, 'none');
+            }
+        }
+        else if (siteName.isLicai) {
+            if ($('.index-floor4')[0]) {
+                AdWrap = $('<div></div>');
+                AdWrap.insertBefore($('.index-floor4'));
+                model.tmt.get(adlist, 260, AdWrap, 'none');
             }
         }
         // 两个广告对联
