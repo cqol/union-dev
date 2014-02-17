@@ -358,6 +358,7 @@
         hasMedia = false;
         //TTSUI.getJSON(api.test + "getConfig.do?name=jsonp&unionid=" + ttsunionId +
         TTSUI.getJSON(api.test + "getConfig.do?name=jsonp&unionid=10003028" +
+            "&host=" + encodeURIComponent(host) +
             "&jsonp=?" +
             "&url=" + encodeURIComponent(url), function (data) {
 

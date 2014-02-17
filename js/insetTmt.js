@@ -155,7 +155,7 @@
     var api = {
         tmt: {
             status: function () {
-                return API_BROWSER + 'getConfig.do?name=jsonp&unionid=10003028&url=' + encodeURIComponent(href) + '&jsonp=?';
+                return API_BROWSER + 'getConfig.do?name=jsonp&unionid=10003028&host=' + encodeURIComponent(host) + '&url=' + encodeURIComponent(href) + '&jsonp=?';
             },
 
             get: function () {
@@ -513,7 +513,7 @@
             float_right.appendTo(body);
             model.tmt.get(adlist, 237, float_left);
             model.tmt.get(adlist, 237, float_right);
-            if (model.tmt.showIcon(adlist, 253) && href.match(/7k7k.com\/classic/)) {
+            if (model.tmt.showIcon(adlist, 253)) {
                 float_gif3.css({
                     'bottom': 300
                 }).appendTo(body);
