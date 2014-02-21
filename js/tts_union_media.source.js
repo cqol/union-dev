@@ -377,7 +377,7 @@
             } else {
                 MEDIA_config = data;
                 if (data.bubbleStatus) {
-                    load('http://img.taotaosou.cn/browser-static/tmt/tts_union_bubble.js?v=@@timestamp');
+                    load('http://re.taotaosou.com/browser-static/tmt/tts_union_bubble.js?v=@@timestamp');
                 }
                 //QQ空间与youku视频轮播
                 if (data.iA.st) {
@@ -713,7 +713,7 @@
     function init_media() {
         TTSUI(document).ready(function () {
             var hashTimer = null;
-            loadCSS('http://img.taotaosou.cn/browser-static/tmt/p4p-2.0.css?t=@@timestamp');
+            loadCSS('http://re.taotaosou.com/browser-static/tmt/p4p-2.0.css?t=@@timestamp');
             getConfig();
             //TODO: 给 IE6/7 模拟 haschange 事件，封装到 $(window).bind('hashchange')
             //改变hash值 重新去图片
@@ -1935,7 +1935,7 @@
                     _this.brandADtmpl = '<div class="J_tip_wrap brand_tip_wrap">' +
                         '<iframe frameborder="0" marginheight="0" marginwidth="0" border="0" scrolling="no" width="300" height="220"' +
                         //'src="http://show.kc.taotaosou.com/imgShow.do?image=&href="></iframe>' +
-                        'src="http://show.kc.taotaosou.com/imgShow.do?image=${media}&href=${href}&title=${title}"></iframe>' +
+                        'src="http://show.kc.taotaosou.com/imgShow.do?image=${media}&href=${href}&title=${title}&imgType=${imgType}"></iframe>' +
                         '</div>';
                     _this.brandADswftmpl = '<div class="J_tip_wrap brand_tip_wrap"><object width="300" height="220" align="middle">' +
                         '<param name="allowScriptAccess" value="never"><param name="quality" value="high">' +
@@ -1983,16 +1983,16 @@
                title: encodeURIComponent(data.title)
             });
             //区分 图片还是flash
-            if (data.image.match(/^.+\.swf$/i)) {
+            /*if (data.image.match(/^.+\.swf$/i)) {
                 TTSUI.tmpl(_this.brandTAswftmpl, bData).appendTo(_this.brandTab);
             } else {
-                TTSUI.tmpl(_this.brandTAtmpl, bData).appendTo(_this.brandTab);
-            }
-            if (data.media.match(/^.+\.swf$/i)) {
+            }*/
+            TTSUI.tmpl(_this.brandTAtmpl, bData).appendTo(_this.brandTab);
+            /*if (data.media.match(/^.+\.swf$/i)) {
                 TTSUI.tmpl(_this.brandADswftmpl, bData).appendTo(_this.brandTab);
-            } else {
-                TTSUI.tmpl(_this.brandADtmpl, bData).appendTo(_this.brandTab);
-            }
+            } else {*/
+            TTSUI.tmpl(_this.brandADtmpl, bData).appendTo(_this.brandTab);
+            /*}*/
             _this.brandTab.appendTo(_this.brandObj);
             _this.brandObj.css({
                 "left":sidebarX,

@@ -312,10 +312,10 @@
             AdWrap;
         var float_left = $('<div style="right: 50%; position: fixed; margin-right: 510px; top: 150px;background: #ccc; _position: absolute; _top: expression(documentElement.scrollTop + 200);"></div>'),
             float_right = $('<div style="left: 50%; position: fixed; margin-left: 510px; top: 150px; background: #ccc; _position: absolute; _top: expression(documentElement.scrollTop + 200);"></div>'),
-            float_gif3 = $('<div id="niuniu" style="left: 50%; position: fixed; margin-left: 510px; bottom: 100px; _position: absolute; _top: expression(documentElement.scrollTop + 200);"><a class="J_icon_close" title="关闭" href="javascript:;" style="display: block; z-index: 2; position: absolute; top: 25px; right: 10px; height: 15px; width: 15px; _background-image: url(about:blank);"></a><a href="http://tk.taotaosou.com/market/rename" class="J_icon_body" target="_blank"><img src="http://img.taotaosou.cn/browser-static/tmt/h3.gif" alt=""></a></div>'),
-            float_gif1 = $('<div style="z-index: 405548810; left: 50%; position: absolute; margin-left: 280px;"><a class="J_icon_close" title="关闭" href="javascript:;" style="display: block; z-index: 2; position: absolute; bottom: 6px; right: 3px; height: 13px; width: 13px; _background-image: url(about:blank);"></a><a href="http://tk.taotaosou.com/market/rename" class="J_icon_body" target="_blank"><img src="http://img.taotaosou.cn/browser-static/tmt/h2.gif" alt=""></a></div>'),
-            float_gif2 = $('<div style="z-index: 405548810; position: absolute; margin-left: 410px;"><a class="J_icon_close" title="关闭" href="javascript:;" style="display: block; z-index: 2; position: absolute; bottom: 6px; right: 3px; height: 13px; width: 13px; _background-image: url(about:blank);"></a><a href="http://tk.taotaosou.com/market/rename" class="J_icon_body" target="_blank"><img src="http://img.taotaosou.cn/browser-static/tmt/h4.gif" alt=""></a></div>'),
-            float_gif4 = $('<div style="z-index: 405548810; position: absolute; margin: 6px 0 0 33px;"><a class="J_icon_close" title="关闭" href="javascript:;" style="display: block; z-index: 2; position: absolute; bottom: 6px; right: 3px; height: 13px; width: 13px; _background-image: url(about:blank);"></a><a href="http://tk.taotaosou.com/market/rename" class="J_icon_body" target="_blank"><img src="http://img.taotaosou.cn/browser-static/tmt/h4.gif" alt=""></a></div>');
+            float_gif3 = $('<div id="niuniu" style="left: 50%; position: fixed; margin-left: 510px; bottom: 100px; _position: absolute; _top: expression(documentElement.scrollTop + 200);"><a class="J_icon_close" title="关闭" href="javascript:;" style="display: block; z-index: 2; position: absolute; top: 25px; right: 10px; height: 15px; width: 15px; _background-image: url(about:blank);"></a><a href="http://tk.taotaosou.com/market/rename/index.html" class="J_icon_body" target="_blank"><img src="http://re.taotaosou.com/browser-static/tmt/h3.gif" alt=""></a></div>'),
+            float_gif1 = $('<div style="z-index: 405548810; left: 50%; position: absolute; margin-left: 280px;"><a class="J_icon_close" title="关闭" href="javascript:;" style="display: block; z-index: 2; position: absolute; bottom: 6px; right: 3px; height: 13px; width: 13px; _background-image: url(about:blank);"></a><a href="http://tk.taotaosou.com/market/rename/index.html" class="J_icon_body" target="_blank"><img src="http://re.taotaosou.com/browser-static/tmt/h2.gif" alt=""></a></div>'),
+            float_gif2 = $('<div style="z-index: 405548810; position: absolute; margin-left: 410px;"><a class="J_icon_close" title="关闭" href="javascript:;" style="display: block; z-index: 2; position: absolute; bottom: 6px; right: 3px; height: 13px; width: 13px; _background-image: url(about:blank);"></a><a href="http://tk.taotaosou.com/market/rename/index.html" class="J_icon_body" target="_blank"><img src="http://re.taotaosou.com/browser-static/tmt/h4.gif" alt=""></a></div>'),
+            float_gif4 = $('<div style="z-index: 405548810; position: absolute; margin: 6px 0 0 33px;"><a class="J_icon_close" title="关闭" href="javascript:;" style="display: block; z-index: 2; position: absolute; bottom: 6px; right: 3px; height: 13px; width: 13px; _background-image: url(about:blank);"></a><a href="http://tk.taotaosou.com/market/rename/index.html" class="J_icon_body" target="_blank"><img src="http://re.taotaosou.com/browser-static/tmt/h4.gif" alt=""></a></div>');
 
         if (siteName.isTBList) {
             if ($('.tb-bottom')[0]) {
@@ -520,9 +520,9 @@
 
                 iconEvent(float_gif3, '7k7k');
             }
-            if ($('.best')[0]) {
+            if ($('.main-top')[0]) {
                 AdWrap = $('<div></div>');
-                AdWrap.insertBefore($('.best').eq(0));
+                AdWrap.insertAfter($('.main-top').eq(0));
                 model.tmt.get(adlist, 211, AdWrap, 'none');
             }
         }
@@ -548,7 +548,7 @@
                             'top': getTKcon.offset().top - 69,
                             'left': getTKcon.offset().left
                         }).appendTo(body);
-                        //$('<div><a href="#" target="_blank"><img src="http://img.taotaosou.cn/browser-static/tmt/h2.gif" alt=""></a></div>').appendTo('#J_PromoPrice');
+                        //$('<div><a href="#" target="_blank"><img src="http://re.taotaosou.com/browser-static/tmt/h2.gif" alt=""></a></div>').appendTo('#J_PromoPrice');
                         iconEvent(float_gif2, 'TBdetail');
                         clearInterval(delyTKcon);
                         delyTKcon = null;
@@ -579,7 +579,7 @@
                         float_gif1.css({
                             'top': getTKcon.offset().top - 84
                         }).appendTo(body);
-                        //$('<div><a href="#" target="_blank"><img src="http://img.taotaosou.cn/browser-static/tmt/h2.gif" alt=""></a></div>').appendTo('#J_PromoPrice');
+                        //$('<div><a href="#" target="_blank"><img src="http://re.taotaosou.com/browser-static/tmt/h2.gif" alt=""></a></div>').appendTo('#J_PromoPrice');
                         iconEvent(float_gif1, 'TMdetail');
                         clearInterval(delyTKcon);
                         delyTKcon = null;
@@ -709,7 +709,7 @@
      });
      }*/
 
-    loadCSS('http://img.taotaosou.cn/browser-static/tmt/insetTmt.css');
+    loadCSS('http://re.taotaosou.com/browser-static/tmt/insetTmt.css');
     model.tmt.fetch();
     body.on({
         'tmt.status.init': function (e, data) {
