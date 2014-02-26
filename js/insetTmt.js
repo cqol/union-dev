@@ -169,14 +169,16 @@
                 getJSONP({
                     url: api.tmt.status(),
                     done: function (data) {
-                        /*data = {"id": 3000100076,
-                            "keyType": 2, "minWidth": 300, "minHeight": 300, "maxSize": 1, "bubbleStatus": false,
-                            "imgType": ['JPG', 'JPEG', 'PNG'], "priority": ['1'], "confSim": {"adStyle": 1,
-                                "tabSize": 3, "popDirect": 1, "popTime": 1, "markerStyle": 1, "markerShow": 1, "hover": 0},
-                            "iA": {"st": true,
+                        /*console.log(data);
+                        data = {"id":3000100111,"keyType":2,"minWidth":350,"minHeight":350,"maxSize":3,"bubbleStatus":false,"imgType":[
+                            'JPG','JPEG','GIF'],"priority":[],
+                            "confSpider":{"macthNum":5,"macthWidth":310,"macthHeight":310,
+                                "imgType":['JPG','JPEG','GIF']},
+                            "confBubble":{"bubbleStatus":false,"bubbleType":2},
+                            "iA":{"st": true,
                                 "adList": [
                                     {"pid": 225, "name": "淘宝新首页1", "width": 880, "height": 90, "number": 2, "status": true},
-                                    {"pid": 226, "name": " 淘宝list4", "width": 280, "height": 90, "number": 2, "status": true},
+                                    {"pid": 226, "name": "淘宝list4", "width": 280, "height": 90, "number": 2, "status": true},
                                     {"pid": 223, "name": "淘宝新首页1", "width": 880, "height": 90, "number": 2, "status": true},
                                     {"pid": 224, "name": "淘宝新首页2", "width": 300, "height": 90, "number": 2, "status": true},
                                     {"pid": 227, "name": "已买到的1", "width": 630, "height": 90, "number": 2, "status": true},
@@ -204,9 +206,11 @@
                                     {"pid": 248, "name": "我的淘宝2", "width": 359, "height": 90, "number": 1, "status": true},
                                     {"pid": 249, "name": "天猫首页1", "width": 940, "height": 90, "number": 1, "status": true},
                                     {"pid": 250, "name": "淘宝list1", "width": 940, "height": 90, "number": 1, "status": true},
-                                    {"pid": 205, "name": "淘宝首页2", "width": 300, "height": 300, "number": 2, "status": true}
-                                ]}
-                        };*/
+                                    {"pid": 205, "name": "淘宝首页2", "width": 300, "height": 300, "number": 2, "status": true},
+                                    {"pid":257,"name":"\u5929\u732b\u627e\u4e86\u53c8\u627e\u5e95\u90e8","width":120,"height":80,"number":1,"status":false},
+                                    {"pid":262,"name":"\u5929\u732bdetail\u53f3\u4fa71","width":190,"height":90,"number":1,"status":true}
+                                ]},
+                            "infoMedia":false};*/
                         body.trigger('tmt.show', [data]);
                     }
                 });
@@ -597,10 +601,26 @@
                     }
                 }, 200)
             }
+
+            //看了又看 插入广告
+            var getAct = null;
+            getAct = setInterval(function () {
+                if ($('.ALDCLS-act')[0]) {
+                    clearInterval(getAct);
+                    getAct = null;
+                    var tmp = '<div><div class="ald-hd"> <s></s><span>推荐上新品牌</span></div></div>';
+                    AdWrap = $(tmp);
+                    AdWrap.insertAfter($('.ald-carousel').eq(0));
+                    model.tmt.get(adlist, 262, AdWrap, 'none');
+                }
+            }, 200);
         }
         else if (siteName.isQzone) {
             if (model.tmt.showIcon(adlist, 251)) {
-                float_gif3.appendTo(body);
+                float_gif3.css({
+                    'right': 10,
+                    'margin': 0
+                }).appendTo(body);
                 iconEvent(float_gif3, 'qzone');
             }
         }

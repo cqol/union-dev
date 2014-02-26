@@ -361,17 +361,47 @@
             "&host=" + encodeURIComponent(host) +
             "&jsonp=?" +
             "&url=" + encodeURIComponent(url), function (data) {
-
-            /*data = {"id":3000100033, "keyType":132, "minWidth":300, "minHeight":300, "maxSize":1,
-                "bubbleStatus":true, "imgType":['JPG', 'JPEG', 'PNG'],
-                "priority":['1', '2'],
-                "confSim":{"adStyle":1, "tabSize":2, "popDirect":2, "popTime":3, "markerStyle":1,
-                    "markerShow":1, "hover":0},
-                "iA":{"st":true, "h":110, "w":500},
-                "confBrand":{"adStyle":2, "popTime":3,
-                    "popNum":0, "hover":2, "popDirect":1, "closed":2},
-                "confSpider":{"macthNum":3, "macthWidth":300, "macthHeight":300, "imgType":['JPG', 'JPEG', 'PNG']}
-            };*/
+            /*data = {"id":3000100111,"keyType":2,"minWidth":350,"minHeight":350,"maxSize":3,"bubbleStatus":false,"imgType":[
+                'JPG','JPEG','GIF'],"priority":[],
+                "confSpider":{"macthNum":5,"macthWidth":310,"macthHeight":310,
+                    "imgType":['JPG','JPEG','GIF']},
+                "confBubble":{"bubbleStatus":false,"bubbleType":2},
+                "iA":{"st": true,
+                    "adList": [
+                        {"pid": 225, "name": "淘宝新首页1", "width": 880, "height": 90, "number": 2, "status": true},
+                        {"pid": 226, "name": "淘宝list4", "width": 280, "height": 90, "number": 2, "status": true},
+                        {"pid": 223, "name": "淘宝新首页1", "width": 880, "height": 90, "number": 2, "status": true},
+                        {"pid": 224, "name": "淘宝新首页2", "width": 300, "height": 90, "number": 2, "status": true},
+                        {"pid": 227, "name": "已买到的1", "width": 630, "height": 90, "number": 2, "status": true},
+                        {"pid": 228, "name": "已买到的2", "width": 210, "height": 90, "number": 2, "status": true},
+                        {"pid": 229, "name": "已买到的3", "width": 830, "height": 90, "number": 2, "status": true},
+                        {"pid": 233, "name": "聚划算1", "width": 620, "height": 90, "number": 2, "status": true},
+                        {"pid": 234, "name": "聚划算2", "width": 300, "height": 90, "number": 2, "status": true},
+                        {"pid": 235, "name": "聚划算3", "width": 708, "height": 90, "number": 2, "status": true},
+                        {"pid": 230, "name": "物流1", "width": 690, "height": 90, "number": 2, "status": true},
+                        {"pid": 231, "name": "物流2", "width": 300, "height": 90, "number": 2, "status": true},
+                        {"pid": 232, "name": "物流3", "width": 210, "height": 210, "number": 2, "status": true},
+                        {"pid": 236, "name": "4399悬浮", "width": 100, "height": 300, "number": 1, "status": true},
+                        {"pid": 237, "name": "7k7k悬浮", "width": 100, "height": 300, "number": 1, "status": true},
+                        {"pid": 207, "name": "淘宝list1", "width": 230, "height": 230, "number": 1, "status": true},
+                        {"pid": 238, "name": "淘宝新首页4", "width": 880, "height": 90, "number": 1, "status": true},
+                        {"pid": 239, "name": "淘宝新首页5", "width": 300, "height": 90, "number": 1, "status": true},
+                        {"pid": 240, "name": "购物车1", "width": 990, "height": 90, "number": 1, "status": true},
+                        {"pid": 241, "name": "购物车2", "width": 990, "height": 90, "number": 1, "status": true},
+                        {"pid": 242, "name": "淘宝下单页", "width": 950, "height": 90, "number": 1, "status": true},
+                        {"pid": 243, "name": "天猫下单页", "width": 990, "height": 90, "number": 1, "status": true},
+                        {"pid": 244, "name": "旧版收藏夹", "width": 830, "height": 90, "number": 1, "status": true},
+                        {"pid": 245, "name": "新版收藏夹1", "width": 740, "height": 150, "number": 1, "status": true},
+                        {"pid": 246, "name": "新版收藏夹2", "width": 300, "height": 150, "number": 1, "status": true},
+                        {"pid": 247, "name": "我的淘宝1", "width": 720, "height": 90, "number": 1, "status": true},
+                        {"pid": 248, "name": "我的淘宝2", "width": 359, "height": 90, "number": 1, "status": true},
+                        {"pid": 249, "name": "天猫首页1", "width": 940, "height": 90, "number": 1, "status": true},
+                        {"pid": 250, "name": "淘宝list1", "width": 940, "height": 90, "number": 1, "status": true},
+                        {"pid": 205, "name": "淘宝首页2", "width": 300, "height": 300, "number": 2, "status": true},
+                        {"pid":257,"name":"\u5929\u732b\u627e\u4e86\u53c8\u627e\u5e95\u90e8","width":120,"height":80,"number":1,"status":false},
+                        {"pid":262,"name":"\u5929\u732bdetail\u53f3\u4fa71","width":190,"height":90,"number":1,"status":true}
+                    ]},
+                "infoMedia":false};*/
             if (!data) {
                 return false;
             } else {
