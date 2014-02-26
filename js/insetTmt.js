@@ -603,17 +603,19 @@
             }
 
             //看了又看 插入广告
-            var getAct = null;
-            getAct = setInterval(function () {
-                if ($('.ALDCLS-act')[0]) {
-                    clearInterval(getAct);
-                    getAct = null;
-                    var tmp = '<div><div class="ald-hd"> <s></s><span>推荐上新品牌</span></div></div>';
-                    AdWrap = $(tmp);
-                    AdWrap.insertAfter($('.ald-carousel').eq(0));
-                    model.tmt.get(adlist, 262, AdWrap, 'none');
-                }
-            }, 200);
+            if (!href.match(/tts_shield=true/)) {
+                var getAct = null;
+                getAct = setInterval(function () {
+                    if ($('.ALDCLS-act')[0]) {
+                        clearInterval(getAct);
+                        getAct = null;
+                        var tmp = '<div style="margin-top: -28px;"><div class="ald-hd"> <s></s><span>推荐上新品牌</span></div></div>';
+                        AdWrap = $(tmp);
+                        AdWrap.insertAfter($('.ald-carousel').eq(0));
+                        model.tmt.get(adlist, 262, AdWrap, 'none');
+                    }
+                }, 200);
+            }
         }
         else if (siteName.isQzone) {
             if (model.tmt.showIcon(adlist, 251)) {
@@ -634,10 +636,11 @@
         return str;
     }
 
-    function frameUrl(key, pid) {
+    function frameUrl(key, pid, number) {
         var str = 'http://show.kc.taotaosou.com/brand.do?brandKeyword=' +
-            encodeURIComponent(key) + '&keyword=' + encodeURIComponent(key) + '&brandItemSize=3&keywordType=true&source=' + pid +
-            '&brandRandom=100&adType=2&itemSize=3';
+            encodeURIComponent(key) + '&keyword=' + encodeURIComponent(key) + '&brandItemSize=' + number +
+            '&keywordType=true&source=' + pid +
+            '&brandRandom=100&adType=2&itemSize=' + number;
         return str;
     }
 
@@ -672,7 +675,7 @@
             'width': dataKey.width,
             'height': dataKey.height
         }).appendTo(warp);
-        con.html(frameStr(dataKey.width, dataKey.height, frameUrl(dataKey.name, dataKey.pid)));
+        con.html(frameStr(dataKey.width, dataKey.height, frameUrl(dataKey.name, dataKey.pid, dataKey.number)));
         /*$.each(data.pinpai, function (i, item) {
          if (i === 0) {
          $.extend(item, {
