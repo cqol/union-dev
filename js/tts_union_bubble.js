@@ -1,19 +1,19 @@
-(function (win, doc) {
+(function (win, undefined) {
     var cqol = {
-        api:{
+        api: {
             //图媒体大站
-            re:'http://re.taotaosou.com/',
+            re: 'http://re.taotaosou.com/',
             //淘同款
-            browser:'http://browser.re.taotaosou.com/',
+            browser: 'http://browser.re.taotaosou.com/',
             //统计埋点接
-            log:'http://log.taotaosou.com/',
-            kc:'http://show.kc.taotaosou.com/'
+            log: 'http://log.taotaosou.com/',
+            kc: 'http://show.kc.taotaosou.com/'
         },
-        cqol:'cqol',
+        cqol: 'cqol',
         /**
          * 发送一个JSONP请求
          */
-        getJSONP:function (url, success) {
+        getJSONP: function (url, success) {
             var cbnum = 'cb' + this.getJSONP.counter++,
                 cbname = 'cqol.getJSONP.' + cbnum,
                 script = document.createElement('script');
@@ -45,7 +45,7 @@
          * @param url 链接地址
          * @param callback 回调
          */
-        load:function (url, callback) {
+        load: function (url, callback) {
             var script = document.createElement("script");
 
             script.type = 'text/javascript';
@@ -71,7 +71,7 @@
          * @param {String} type 事件种类
          * @param {Function} fn 回调函数
          */
-        addEvent:function (elm, type, fn) {
+        addEvent: function (elm, type, fn) {
             if (elm.addEventListener) {
                 elm.addEventListener(type, fn, false);
                 return true;
@@ -90,7 +90,7 @@
          * @param {String} value 必填项
          * @param {String} hour 过期时间
          */
-        setCookie:function (opt) {
+        setCookie: function (opt) {
             var _this = this;
             if (!opt.name || !opt.value) {
                 return false;
@@ -100,7 +100,7 @@
 
             this.load(_this.api.kc + 'setCookie.do?name=' + opt.name + '&value=' + opt.value + '&day=' + opt.hour);
         },
-        getCSS:function (obj, attr) {
+        getCSS: function (obj, attr) {
             return parseFloat(obj.currentStyle ? obj.currentStyle[attr] : document.defaultView.getComputedStyle(obj, false)[attr]);
         },
         /**
@@ -108,11 +108,11 @@
          * @param {Element} elm dom节点
          * @example
          * setStyle(elm: "", {
-             *     "width": "10px",
-             *     "height": "20px"
-             * })
+                             *     "width": "10px",
+                             *     "height": "20px"
+                             * })
          */
-        setCSS:function (elm, styles, callback) {
+        setCSS: function (elm, styles, callback) {
             var setStyle = function (prop, val) {
                 elm.style[prop] = val;
             };
@@ -121,15 +121,15 @@
                 if (!styles.hasOwnProperty(prop)) continue;
                 setStyle(prop, styles[prop]);
             }
-            if(callback) {
-               callback();
+            if (callback) {
+                callback();
             }
         },
         /**
          * @param {String} name 必填项
          * @return {Boolean}
          */
-        getCookie:function (name, callback) {
+        getCookie: function (name, callback) {
             var _this = this;
             if (!name) {
                 return false;
@@ -161,8 +161,8 @@
         }
 
         var MOVE_TYPE = {
-            BUFFER:1,
-            FLEX:2
+            BUFFER: 1,
+            FLEX: 2
         };
 
         function StartMove(obj, oTarget, iType, fnCallBack, fnDuring) {
@@ -256,14 +256,14 @@
          * 初始化
          */
         function init() {
-            var unionWrap = doc.getElementById(global + '_union');
+            var unionWrap = document.getElementById(global + '_union');
             if (!unionWrap) {
-                globalBox = doc.createElement('div');
+                globalBox = document.createElement('div');
                 globalBox.id = global + '_union';
-                doc.body.appendChild(globalBox);
+                document.body.appendChild(globalBox);
                 unionWrap = globalBox;
             }
-            var bubbleWrap = doc.createElement('div');
+            var bubbleWrap = document.createElement('div');
             bubbleWrap.id = 'J_tts_bubble';
             bubbleWrap.className = 'media_bubble';
 
@@ -276,17 +276,17 @@
             var oClose = document.getElementById('J_tts_bubble_close');
             setTimeout(function () {
                 c.setCSS(bubbleWrap, {
-                    display:'block'
+                    display: 'block'
                 });
-                new StartMove(bubbleWrap, {height:250}, MOVE_TYPE.BUFFER, function () {
+                new StartMove(bubbleWrap, {height: 250}, MOVE_TYPE.BUFFER, function () {
                     //成功展示埋点
                     statistics('Union_Adframe_Autoshow');
                 });
             }, 800);
             c.addEvent(oClose, 'click', function () {
-                new StartMove(bubbleWrap, {height:0}, MOVE_TYPE.BUFFER, function () {
+                new StartMove(bubbleWrap, {height: 0}, MOVE_TYPE.BUFFER, function () {
                     c.setCSS(bubbleWrap, {
-                        display:"none"
+                        display: "none"
                     });
                     //广告框关闭按钮被用户点击的次数
                     statistics('Union_Adframe_X');
@@ -299,9 +299,9 @@
          */
         c.getCookie('TKPaoPao', function (value) {
             var cookieParam = {
-                name:'TKPaoPao',
-                value:'show',
-                hour:'8'
+                name: 'TKPaoPao',
+                value: 'show',
+                hour: '8'
             };
             //init();
             if (value) {
@@ -317,4 +317,4 @@
             }
         });
     })(cqol);
-})(window, document);
+})(window);
